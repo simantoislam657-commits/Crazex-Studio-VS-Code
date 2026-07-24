@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================================
-     1. Data Structures (Services)
+     1. Data Structures (Services & Website Showcase)
      ========================================================================== */
 
   const servicesData = {
@@ -104,6 +104,119 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  const websiteProjectsData = {
+    portfolio: {
+      title: '👨‍💻 Personal Portfolio Website',
+      badge: 'Personal Project',
+      badgeClass: 'personal',
+      overview: 'A sleek, modern developer & designer personal portfolio crafted to showcase creative work, services, and brand identity with smooth animations and interactive UI.',
+      theme: 'Dark Futuristic Neon Accent with Glassmorphism and Minimalist Typography.',
+      targetAudience: 'Freelancers, Digital Creators, Developers, Consultants, and Creative Professionals.',
+      businessGoals: 'Establish online authority, highlight expertise, showcase creative case studies, and generate high-converting client leads.',
+      features: [
+        'Interactive Project Showcase & Filterable Gallery',
+        'Smooth Scroll & Kinetic Micro-Interactions',
+        'Custom Dark / Light Theme Toggle Mode',
+        'Integrated Contact Form with Direct WhatsApp Routing',
+        'Fully Animated Particle Background Canvas'
+      ],
+      problemSolved: 'Eliminates flat, boring text resumes by replacing them with a high-retention visual experience that builds instant credibility with potential clients.',
+      technologies: ['HTML5', 'CSS3 Variable Systems', 'JavaScript (ES6+)', 'Schema.org JSON-LD', 'HTML Canvas API'],
+      responsiveInfo: '100% Mobile & Tablet Optimized with custom viewport breakpoints and touch-friendly navigation.',
+      seoFeatures: 'Pre-configured Canonical Tags, Open Graph Social Cards, Structured Schema Markup, and Semantic HTML5 tags.',
+      performanceHighlights: '98+ Google PageSpeed Score, Lightweight Vanilla CSS/JS without heavy external framework bloat.',
+      ctaMessage: 'Hello Crazex Studio!\n\nI loved your Personal Portfolio Website design! I would like to build a similar custom portfolio website for my personal brand.'
+    },
+    restaurant: {
+      title: '🍽️ Restaurant Demo Website',
+      badge: 'Concept Project',
+      badgeClass: 'concept',
+      overview: 'An appetizing, luxury website design built for fine dining restaurants, cafés, and food outlets with an interactive digital menu and reservation booking flow.',
+      theme: 'Warm Culinary Dark Gold & Deep Charcoal with high-resolution food imagery.',
+      targetAudience: 'Gourmet Restaurants, Cafés, Fast Food Chains, Cloud Kitchens, and Bistro Owners.',
+      businessGoals: 'Drive online table reservations, increase food delivery orders, and showcase mouth-watering menu items visually.',
+      features: [
+        'Interactive Digital Menu with Filterable Food Categories',
+        'Table Reservation Form with Instant Confirmation',
+        'Customer Reviews & Social Proof Slider',
+        'Integrated Google Maps Location & Store Hours',
+        'Special Offers & Seasonal Banner Highlights'
+      ],
+      problemSolved: 'Solves slow order taking and lost reservations by giving diners an instant, mobile-friendly digital booking and ordering experience.',
+      technologies: ['HTML5', 'CSS3 Grid & Flexbox', 'Vanilla JavaScript ES6', 'Google Maps API', 'CSS Glassmorphism'],
+      responsiveInfo: 'Flawless presentation on mobile phones so guests can view menus and book tables easily on the go.',
+      seoFeatures: 'Geo-targeted Local Business Schema, Open Graph previews for Facebook & Instagram sharing, and structured menu tags.',
+      performanceHighlights: 'Lazy-loaded high-res food images, smooth CSS transitions, sub-second initial load speed.',
+      ctaMessage: 'Hello Crazex Studio!\n\nI am interested in your Restaurant Demo Website design! I would like to create a website for my restaurant/café business.'
+    },
+    ecommerce: {
+      title: '🛍️ E-commerce Demo Website',
+      badge: 'Concept Project',
+      badgeClass: 'concept',
+      overview: 'A high-converting, modern online store showcase designed for fashion, electronics, lifestyle, and retail brands looking to scale online sales.',
+      theme: 'Minimalist Clean Luxury with Vibrant Call-to-Action Highlights and bold product framing.',
+      targetAudience: 'E-commerce Brands, Fashion Retailers, Gadget Stores, and Direct-to-Consumer (D2C) Merchants.',
+      businessGoals: 'Maximize conversion rate, reduce cart abandonment, and offer a frictionless shopping experience.',
+      features: [
+        'Product Grid with Quick View & Image Zoom',
+        'Dynamic Shopping Cart & Express Checkout Modal',
+        'Category Filters, Price Range & Search Functionality',
+        'Customer Testimonials & Verified Rating Badges',
+        'Trust Badges & Secure Checkout Guarantee Banners'
+      ],
+      problemSolved: 'Fixes slow store loading times and complicated checkout steps that cause prospective online buyers to abandon their purchase.',
+      technologies: ['HTML5', 'CSS3 Grid Layout', 'Vanilla JS Cart State', 'Local Storage API', 'SVG Icon Library'],
+      responsiveInfo: 'Mobile-first cart UI optimized for single-thumb navigation on smartphone screens.',
+      seoFeatures: 'Product Schema JSON-LD markup, keyword-optimized heading hierarchy, and meta preview tags.',
+      performanceHighlights: 'Zero framework bloat, instant page navigation, and highly optimized web-formatted graphics.',
+      ctaMessage: 'Hello Crazex Studio!\n\nI am interested in your E-commerce Demo Website design! I want to launch an online store for my brand.'
+    },
+    realestate: {
+      title: '🏢 Real Estate Demo Website',
+      badge: 'Concept Project',
+      badgeClass: 'concept',
+      overview: 'A premium real estate agency showcase designed to highlight luxury property listings, apartment tours, location amenities, and agent contacts.',
+      theme: 'Corporate Navy, Slate Grey & Gold Accents for maximum trust and sophistication.',
+      targetAudience: 'Real Estate Developers, Property Agencies, Real Estate Brokers, and Luxury Home Sellers.',
+      businessGoals: 'Capture high-ticket buyer leads, schedule property site visits, and showcase property portfolios elegantly.',
+      features: [
+        'Interactive Property Search with Location, Price, & Bedroom Filters',
+        'HD Image Gallery & Virtual Tour Embed Slot',
+        'Floor Plan Viewer & Property Specifications Grid',
+        'Instant Lead Capture Form for Booking Site Visits',
+        'Agent Profiles with Direct Call & WhatsApp Contact'
+      ],
+      problemSolved: 'Replaces generic, uninspiring listings with interactive property showcases that pre-qualify serious buyers.',
+      technologies: ['HTML5', 'CSS3 Custom Variables', 'JavaScript Lightbox & Slider', 'Google Maps Location Tags'],
+      responsiveInfo: 'Fully responsive grid adapting effortlessly from ultra-wide monitors down to handheld smartphones.',
+      seoFeatures: 'RealEstateAgent Schema markup, geo-location meta tags, and optimized property listing cards.',
+      performanceHighlights: 'Optimized multi-image loading, smooth modal overlays, and 95+ performance metrics.',
+      ctaMessage: 'Hello Crazex Studio!\n\nI am interested in your Real Estate Demo Website design! I want to create a website for my real estate project/agency.'
+    },
+    gym: {
+      title: '💪 Gym Demo Website',
+      badge: 'Concept Project',
+      badgeClass: 'concept',
+      overview: 'An energetic, high-impact fitness website crafted to boost gym memberships, promote personal training programs, and showcase class schedules.',
+      theme: 'High-Energy Dark Neon Orange & Cyber Red with bold motivational typography.',
+      targetAudience: 'Fitness Centers, Gyms, Crossfit Boxes, Yoga Studios, and Personal Trainers.',
+      businessGoals: 'Convert visitors into active members, sell training packages, and build a thriving fitness community.',
+      features: [
+        'Interactive Class Schedule & Weekly Workout Timetable',
+        'Membership Pricing Cards with Instant Signup Links',
+        'BMI Calculator & Fitness Goal Tracker Widget',
+        'Trainer Spotlight & Client Transformation Slider',
+        'Free Trial Pass Lead Generation Popup'
+      ],
+      problemSolved: 'Eliminates confusion regarding class timings and membership rates by presenting clear, actionable signup pathways.',
+      technologies: ['HTML5', 'CSS3 Flexbox & Grid', 'JavaScript Logic for Interactive Calculators', 'CSS Micro-Animations'],
+      responsiveInfo: 'Touch-optimized mobile interface allowing users to check schedules and sign up directly from their phones.',
+      seoFeatures: 'Local Business Schema Markup, Open Graph share cards, and targeted fitness keywords.',
+      performanceHighlights: 'Superfast rendering speed, lightweight code, and hardware-accelerated animations.',
+      ctaMessage: 'Hello Crazex Studio!\n\nI am interested in your Gym Demo Website design! I want to build a high-energy website for my gym/fitness studio.'
+    }
+  };
+
   /* ==========================================================================
      2. Core UI & Utility Elements
      ========================================================================== */
@@ -141,7 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }, 1500);
 
   /* ==========================================================================
-     3. Scroll Progress, Mouse Tracking & Floating Scrollbar (UPDATE #4)
+     3. Scroll Progress, Mouse Tracking & Floating Scrollbar
      ========================================================================== */
 
   const floatingTrack = document.getElementById('floatingScrollbarTrack');
@@ -246,7 +359,7 @@ document.addEventListener('DOMContentLoaded', () => {
   animateCursorRing();
 
   // Add Hover Scale Effects to Interactive Elements
-  const interactiveSelector = 'a, button, .service-card, .portfolio-card, .video-embed-card, .poster-card, .pricing-card, .interactive-card, .team-card, .why-choose-card, .terms-card';
+  const interactiveSelector = 'a, button, .service-card, .portfolio-card, .video-embed-card, .poster-card, .pricing-card, .interactive-card, .team-card, .why-choose-card, .terms-card, .website-card, .floating-card';
   document.querySelectorAll(interactiveSelector).forEach(el => {
     el.addEventListener('mouseenter', () => {
       if (customCursor) customCursor.classList.add('hover');
@@ -510,7 +623,100 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================================
-     10. Essential Services Live Calculator & Business Category (UPDATE #3)
+     10. Website Design Showcase Modal Popup Logic (UPDATE #4)
+     ========================================================================== */
+
+  const websiteModal = document.getElementById('websiteModal');
+  const websiteModalBody = document.getElementById('websiteModalBody');
+  const websiteDetailsBtns = document.querySelectorAll('.website-details-btn');
+
+  websiteDetailsBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const projectId = btn.getAttribute('data-project-id');
+      const data = websiteProjectsData[projectId];
+
+      if (data && websiteModal && websiteModalBody) {
+        websiteModalBody.innerHTML = `
+          <div class="website-modal-header">
+            <span class="project-type-badge ${data.badgeClass}">${data.badge}</span>
+            <h2 style="margin-top: 0.5rem; font-family: var(--font-display); font-size: 1.8rem; color: var(--text-primary);">${data.title}</h2>
+          </div>
+
+          <div class="modal-section-grid">
+            <div class="modal-box">
+              <h4>📋 Project Overview</h4>
+              <p>${data.overview}</p>
+            </div>
+            <div class="modal-box">
+              <h4>🎨 Design Theme</h4>
+              <p>${data.theme}</p>
+            </div>
+            <div class="modal-box">
+              <h4>🎯 Target Audience</h4>
+              <p>${data.targetAudience}</p>
+            </div>
+            <div class="modal-box">
+              <h4>📈 Business Goals</h4>
+              <p>${data.businessGoals}</p>
+            </div>
+          </div>
+
+          <div class="modal-box" style="margin-bottom: 1.5rem;">
+            <h4>✨ Key Features & Functionality</h4>
+            <ul>
+              ${data.features.map(f => `<li>${f}</li>`).join('')}
+            </ul>
+          </div>
+
+          <div class="modal-section-grid">
+            <div class="modal-box">
+              <h4>💡 Problem Solved</h4>
+              <p>${data.problemSolved}</p>
+            </div>
+            <div class="modal-box">
+              <h4>⚙️ Technologies Used</h4>
+              <p>${data.technologies.join(', ')}</p>
+            </div>
+            <div class="modal-box">
+              <h4>📱 Responsive Information</h4>
+              <p>${data.responsiveInfo}</p>
+            </div>
+            <div class="modal-box">
+              <h4>🔍 SEO Features</h4>
+              <p>${data.seoFeatures}</p>
+            </div>
+          </div>
+
+          <div class="modal-box" style="margin-bottom: 1.5rem;">
+            <h4>⚡ Performance Highlights</h4>
+            <p>${data.performanceHighlights}</p>
+          </div>
+
+          <div class="modal-cta-box">
+            <h3>Want a Website Like This For Your Business?</h3>
+            <p>Get in touch with Crazex Studio today for custom web design, fast delivery, and premium growth-driven results.</p>
+            <button type="button" class="btn btn-primary modal-wa-website-btn" style="padding: 0.9rem 2rem;">
+              <span>Request Custom Website Quote</span>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </button>
+          </div>
+        `;
+
+        const waWebsiteBtn = websiteModalBody.querySelector('.modal-wa-website-btn');
+        if (waWebsiteBtn) {
+          waWebsiteBtn.addEventListener('click', () => {
+            openWhatsApp(data.ctaMessage);
+          });
+        }
+
+        openModal(websiteModal);
+      }
+    });
+  });
+
+  /* ==========================================================================
+     11. Essential Services Live Calculator & Business Category
      ========================================================================== */
 
   const categorySelect = document.getElementById('business-category');
@@ -604,7 +810,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ==========================================================================
-     11. Pricing Toggle (Monthly / Yearly Billed) & Package WhatsApp CTA
+     12. Pricing Toggle (Monthly / Yearly Billed) & Package WhatsApp CTA
      ========================================================================== */
 
   const pricingSwitch = document.querySelector('.toggle-switch');
@@ -685,7 +891,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ==========================================================================
-     12. General WhatsApp CTA Buttons (Get Started, Start Your Project, etc.)
+     13. General WhatsApp CTA Buttons
      ========================================================================== */
 
   const waButtons = document.querySelectorAll('.btn-wa');
@@ -698,7 +904,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ==========================================================================
-     13. Contact Form Submission via WhatsApp
+     14. Contact Form Submission via WhatsApp
      ========================================================================== */
 
   const contactForm = document.getElementById('contactForm');
@@ -796,7 +1002,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================================
-     14. Generic Modal Utilities
+     15. Generic Modal Utilities
      ========================================================================== */
 
   function openModal(modal) {
@@ -839,7 +1045,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ==========================================================================
-     15. Scroll Reveal Observer
+     16. Scroll Reveal Observer
      ========================================================================== */
 
   const revealElements = document.querySelectorAll(`
@@ -851,6 +1057,8 @@ document.addEventListener('DOMContentLoaded', () => {
     .terms-card, 
     .video-embed-card,
     .poster-card,
+    .website-card,
+    .tool-category-card,
     .reveal,
     [data-reveal]
   `);
