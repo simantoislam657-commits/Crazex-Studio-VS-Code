@@ -1,20 +1,51 @@
 /**
- * Crazex Studio — Production JavaScript
- * Version: 2026.1
+ * Crazex Studio — Production Master JavaScript
+ * Version: 2026.2 (Fully Consolidated, Optimized & Exception-Safe)
  */
 
 document.addEventListener('DOMContentLoaded', () => {
   'use strict';
 
+  /* ==========================================================================
+     1. Global Constants & Safe Helper Utilities
+     ========================================================================== */
+
   const WHATSAPP_NUMBER = '8801968908404';
 
+  // Global GA4 Event Tracking Helper
+  window.trackGA4Event = function(eventName, eventParams) {
+    if (typeof window.gtag === 'function') {
+      window.gtag('event', eventName, eventParams || {});
+    }
+  };
+
   function openWhatsApp(message) {
-    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
-    window.open(url, '_blank');
+    try {
+      const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+      window.open(url, '_blank', 'noopener,noreferrer');
+    } catch (e) {
+      // Safe fallback
+    }
+  }
+
+  function safeStorageGet(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function safeStorageSet(key, value) {
+    try {
+      localStorage.setItem(key, value);
+    } catch (e) {
+      // Storage restricted or disabled
+    }
   }
 
   /* ==========================================================================
-     1. Data Structures (Services & Website Showcase)
+     2. Data Structures (Services & Website Showcase)
      ========================================================================== */
 
   const servicesData = {
@@ -218,7 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   /* ==========================================================================
-     2. Core UI & Utility Elements
+     3. Cached DOM Elements
      ========================================================================== */
 
   const pageLoader = document.getElementById('pageLoader');
@@ -232,69 +263,81 @@ document.addEventListener('DOMContentLoaded', () => {
   const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
   const mobileMenu = document.getElementById('mobile-menu');
   const navLinks = document.querySelectorAll('.nav-link, .mobile-menu nav a');
+  const sections = document.querySelectorAll('section[id]');
+  const floatingTrack = document.getElementById('floatingScrollbarTrack');
+  const floatingThumb = document.getElementById('floatingScrollbarThumb');
 
-  // Page Loader Fade Out
-  window.addEventListener('load', () => {
-    if (pageLoader) {
-      pageLoader.style.opacity = '0';
-      setTimeout(() => {
-        pageLoader.style.display = 'none';
-      }, 400);
-    }
-  });
+  /* ==========================================================================
+     4. Page Loader Management
+     ========================================================================== */
 
-  // Fallback loader hide
-  setTimeout(() => {
+  const hideLoader = () => {
     if (pageLoader && pageLoader.style.display !== 'none') {
       pageLoader.style.opacity = '0';
       setTimeout(() => {
         pageLoader.style.display = 'none';
       }, 400);
     }
-  }, 1500);
+  };
+
+  window.addEventListener('load', hideLoader, { once: true });
+  setTimeout(hideLoader, 1500);
 
   /* ==========================================================================
-     3. Scroll Progress, Mouse Tracking & Floating Scrollbar
+     5. Scroll Progress, Floating Scrollbar & Throttled Scroll Observer
      ========================================================================== */
 
-  const floatingTrack = document.getElementById('floatingScrollbarTrack');
-  const floatingThumb = document.getElementById('floatingScrollbarThumb');
   let isDraggingThumb = false;
   let dragStartY = 0;
   let startScrollTop = 0;
+  let isTickingScroll = false;
 
   function updateScrollPositions() {
-    const totalScrollable = document.documentElement.scrollHeight - window.innerHeight;
+    const windowHeight = window.innerHeight;
+    const docHeight = document.documentElement.scrollHeight;
+    const scrollY = window.scrollY;
+    const totalScrollable = docHeight - windowHeight;
+
     if (totalScrollable > 0) {
-      const scrollPercent = (window.scrollY / totalScrollable) * 100;
+      const scrollPercent = (scrollY / totalScrollable) * 100;
       if (scrollProgressBar) {
         scrollProgressBar.style.width = `${scrollPercent}%`;
       }
 
       if (floatingTrack && floatingThumb) {
         const trackHeight = floatingTrack.clientHeight;
-        const thumbHeight = Math.max(40, (window.innerHeight / document.documentElement.scrollHeight) * trackHeight);
+        const thumbHeight = Math.max(40, (windowHeight / docHeight) * trackHeight);
         floatingThumb.style.height = `${thumbHeight}px`;
 
         const maxThumbTop = trackHeight - thumbHeight;
-        const currentThumbTop = (window.scrollY / totalScrollable) * maxThumbTop;
+        const currentThumbTop = (scrollY / totalScrollable) * maxThumbTop;
         floatingThumb.style.top = `${currentThumbTop}px`;
       }
     }
 
     if (navbar) {
-      if (window.scrollY > 50) {
+      if (scrollY > 50) {
         navbar.classList.add('scrolled');
       } else {
         navbar.classList.remove('scrolled');
       }
     }
 
-    updateActiveNavLink();
+    updateActiveNavLink(scrollY);
   }
 
-  window.addEventListener('scroll', updateScrollPositions);
-  window.addEventListener('resize', updateScrollPositions);
+  const onScrollThrottled = () => {
+    if (!isTickingScroll) {
+      requestAnimationFrame(() => {
+        updateScrollPositions();
+        isTickingScroll = false;
+      });
+      isTickingScroll = true;
+    }
+  };
+
+  window.addEventListener('scroll', onScrollThrottled, { passive: true });
+  window.addEventListener('resize', onScrollThrottled, { passive: true });
 
   // Floating Drag Logic
   if (floatingTrack && floatingThumb) {
@@ -314,37 +357,50 @@ document.addEventListener('DOMContentLoaded', () => {
       const maxThumbTop = trackHeight - thumbHeight;
       const totalScrollable = document.documentElement.scrollHeight - window.innerHeight;
 
-      const scrollRatio = totalScrollable / maxThumbTop;
-      window.scrollTo(0, startScrollTop + deltaY * scrollRatio);
+      if (maxThumbTop > 0) {
+        const scrollRatio = totalScrollable / maxThumbTop;
+        window.scrollTo(0, startScrollTop + deltaY * scrollRatio);
+      }
     };
 
     const stopDrag = () => {
-      isDraggingThumb = false;
-      document.body.style.userSelect = '';
+      if (isDraggingThumb) {
+        isDraggingThumb = false;
+        document.body.style.userSelect = '';
+      }
     };
 
     floatingThumb.addEventListener('pointerdown', startDrag);
-    window.addEventListener('pointermove', doDrag);
-    window.addEventListener('pointerup', stopDrag);
+    window.addEventListener('pointermove', doDrag, { passive: true });
+    window.addEventListener('pointerup', stopDrag, { passive: true });
   }
 
-  // Mouse Glow & Custom Cursor
+  /* ==========================================================================
+     6. Custom Cursor & Mouse Glow Tracking (rAF Optimized)
+     ========================================================================== */
+
   let mouseX = 0, mouseY = 0;
   let ringX = 0, ringY = 0;
+  let isTickingMouse = false;
 
   window.addEventListener('mousemove', (e) => {
     mouseX = e.clientX;
     mouseY = e.clientY;
 
-    if (cursorDot) {
-      cursorDot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
+    if (!isTickingMouse) {
+      requestAnimationFrame(() => {
+        if (cursorDot) {
+          cursorDot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
+        }
+        if (mouseGlow) {
+          mouseGlow.style.setProperty('--mouse-x', `${mouseX}px`);
+          mouseGlow.style.setProperty('--mouse-y', `${mouseY}px`);
+        }
+        isTickingMouse = false;
+      });
+      isTickingMouse = true;
     }
-
-    if (mouseGlow) {
-      mouseGlow.style.setProperty('--mouse-x', `${mouseX}px`);
-      mouseGlow.style.setProperty('--mouse-y', `${mouseY}px`);
-    }
-  });
+  }, { passive: true });
 
   function animateCursorRing() {
     ringX += (mouseX - ringX) * 0.15;
@@ -356,26 +412,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     requestAnimationFrame(animateCursorRing);
   }
-  animateCursorRing();
 
-  // Add Hover Scale Effects to Interactive Elements
+  if (customCursor && cursorRing) {
+    animateCursorRing();
+  }
+
+  // Hover Scale Effects for Interactive Elements
   const interactiveSelector = 'a, button, .service-card, .portfolio-card, .video-embed-card, .poster-card, .pricing-card, .interactive-card, .team-card, .why-choose-card, .terms-card, .website-card, .floating-card';
   document.querySelectorAll(interactiveSelector).forEach(el => {
     el.addEventListener('mouseenter', () => {
       if (customCursor) customCursor.classList.add('hover');
-    });
+    }, { passive: true });
     el.addEventListener('mouseleave', () => {
       if (customCursor) customCursor.classList.remove('hover');
-    });
+    }, { passive: true });
   });
 
   /* ==========================================================================
-     4. Navigation & Mobile Menu
+     7. Navigation & Active Nav Link Highlighting
      ========================================================================== */
 
-  function updateActiveNavLink() {
-    const sections = document.querySelectorAll('section[id]');
-    const scrollPos = window.scrollY + 120;
+  function updateActiveNavLink(currentScrollY) {
+    const scrollPos = (currentScrollY || window.scrollY) + 120;
 
     sections.forEach(section => {
       const top = section.offsetTop;
@@ -384,9 +442,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (scrollPos >= top && scrollPos < top + height) {
         navLinks.forEach(link => {
-          link.classList.remove('active');
           if (link.getAttribute('href') === `#${id}`) {
             link.classList.add('active');
+          } else {
+            link.classList.remove('active');
           }
         });
       }
@@ -397,8 +456,8 @@ document.addEventListener('DOMContentLoaded', () => {
     mobileMenuBtn.addEventListener('click', () => {
       const isOpen = mobileMenu.classList.contains('active');
       mobileMenu.classList.toggle('active');
-      mobileMenuBtn.setAttribute('aria-expanded', !isOpen);
-      mobileMenu.setAttribute('aria-hidden', isOpen);
+      mobileMenuBtn.setAttribute('aria-expanded', String(!isOpen));
+      mobileMenu.setAttribute('aria-hidden', String(isOpen));
     });
 
     mobileMenu.querySelectorAll('a').forEach(link => {
@@ -411,10 +470,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================================
-     5. Theme Switching (Dark/Light)
+     8. Theme Switching (Dark / Light Mode)
      ========================================================================== */
 
-  const savedTheme = localStorage.getItem('crazex-theme');
+  const savedTheme = safeStorageGet('crazex-theme');
   if (savedTheme === 'light') {
     document.body.classList.add('light');
     if (themeToggleBtn) themeToggleBtn.textContent = '☀️';
@@ -428,7 +487,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.body.classList.add('theme-transition');
       const isLight = document.body.classList.toggle('light');
       themeToggleBtn.textContent = isLight ? '☀️' : '🌙';
-      localStorage.setItem('crazex-theme', isLight ? 'light' : 'dark');
+      safeStorageSet('crazex-theme', isLight ? 'light' : 'dark');
 
       setTimeout(() => {
         document.body.classList.remove('theme-transition');
@@ -437,7 +496,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================================
-     6. Particles Canvas Animation
+     9. Particles Canvas Engine
      ========================================================================== */
 
   const canvas = document.getElementById('particles');
@@ -447,11 +506,15 @@ document.addEventListener('DOMContentLoaded', () => {
     let width = canvas.width = window.innerWidth;
     let height = canvas.height = window.innerHeight;
 
+    let resizeTimeout;
     window.addEventListener('resize', () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-      initParticles();
-    });
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        initParticles();
+      }, 150);
+    }, { passive: true });
 
     class Particle {
       constructor() {
@@ -503,45 +566,49 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================================
-     7. Stat Counters Animation
+     10. Stat Counters Animation
      ========================================================================== */
 
   const statNumbers = document.querySelectorAll('.stat-number');
   let animatedStats = false;
 
-  const statsObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting && !animatedStats) {
-        animatedStats = true;
-        statNumbers.forEach(stat => {
-          const target = parseInt(stat.getAttribute('data-count'), 10);
-          let current = 0;
-          const duration = 1800;
-          const stepTime = 30;
-          const steps = duration / stepTime;
-          const increment = target / steps;
+  if (statNumbers.length > 0) {
+    const statsObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !animatedStats) {
+          animatedStats = true;
+          statNumbers.forEach(stat => {
+            const target = parseInt(stat.getAttribute('data-count'), 10);
+            if (isNaN(target)) return;
 
-          const timer = setInterval(() => {
-            current += increment;
-            if (current >= target) {
-              stat.textContent = target;
-              clearInterval(timer);
-            } else {
-              stat.textContent = Math.floor(current);
-            }
-          }, stepTime);
-        });
-      }
-    });
-  }, { threshold: 0.5 });
+            let current = 0;
+            const duration = 1800;
+            const stepTime = 30;
+            const steps = duration / stepTime;
+            const increment = target / steps;
 
-  const statsSection = document.querySelector('.stats');
-  if (statsSection) {
-    statsObserver.observe(statsSection);
+            const timer = setInterval(() => {
+              current += increment;
+              if (current >= target) {
+                stat.textContent = target;
+                clearInterval(timer);
+              } else {
+                stat.textContent = Math.floor(current);
+              }
+            }, stepTime);
+          });
+        }
+      });
+    }, { threshold: 0.5 });
+
+    const statsSection = document.querySelector('.stats');
+    if (statsSection) {
+      statsObserver.observe(statsSection);
+    }
   }
 
   /* ==========================================================================
-     8. Service Details Modal & Dynamic WhatsApp Inquire
+     11. Service Details Modal & Dynamic WhatsApp Inquire
      ========================================================================== */
 
   const servicesDetailModal = document.getElementById('servicesDetailModal');
@@ -597,7 +664,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ==========================================================================
-     9. Graphics Design Showcase Slider (Horizontal Carousel)
+     12. Graphics Design Showcase Slider (Horizontal Carousel)
      ========================================================================== */
 
   const graphicsSlider = document.getElementById('graphicsSlider');
@@ -623,7 +690,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================================
-     10. Website Design Showcase Modal Popup Logic (UPDATE #4)
+     13. Website Design Showcase Modal Popup Logic
      ========================================================================== */
 
   const websiteModal = document.getElementById('websiteModal');
@@ -716,7 +783,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ==========================================================================
-     11. Essential Services Live Calculator & Business Category
+     14. Essential Services Live Calculator & Business Category
      ========================================================================== */
 
   const categorySelect = document.getElementById('business-category');
@@ -738,9 +805,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     essentialCards.forEach(card => {
       const price = parseInt(card.getAttribute('data-price'), 10) || 0;
-      const name = card.getAttribute('data-name') || card.querySelector('h3').textContent.trim();
+      const h3El = card.querySelector('h3');
+      const name = card.getAttribute('data-name') || (h3El ? h3El.textContent.trim() : '');
       const countEl = card.querySelector('.qty-count');
-      const count = parseInt(countEl.textContent, 10) || 0;
+      const count = parseInt(countEl ? countEl.textContent : '0', 10) || 0;
 
       if (count > 0) {
         const itemTotal = price * count;
@@ -810,7 +878,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ==========================================================================
-     12. Pricing Toggle (Monthly / Yearly Billed) & Package WhatsApp CTA
+     15. Pricing Toggle (Monthly / Yearly Billed) & Package WhatsApp CTA
      ========================================================================== */
 
   const pricingSwitch = document.querySelector('.toggle-switch');
@@ -826,6 +894,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function updatePricing(isYearly) {
     isYearlyBilling = isYearly;
     priceAmounts.forEach((el, index) => {
+      if (!originalPrices[index]) return;
       const rawNum = parseInt(originalPrices[index].replace(/,/g, ''), 10);
       if (!isNaN(rawNum)) {
         if (isYearly) {
@@ -865,8 +934,8 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         pricingSwitch.classList.remove('yearly');
       }
-      toggleLabels[0].classList.toggle('active', !isYearly);
-      toggleLabels[1].classList.toggle('active', isYearly);
+      if (toggleLabels[0]) toggleLabels[0].classList.toggle('active', !isYearly);
+      if (toggleLabels[1]) toggleLabels[1].classList.toggle('active', isYearly);
       updatePricing(isYearly);
     });
   });
@@ -891,7 +960,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ==========================================================================
-     13. General WhatsApp CTA Buttons
+     16. General WhatsApp CTA Buttons & Contact Form Handler
      ========================================================================== */
 
   const waButtons = document.querySelectorAll('.btn-wa');
@@ -902,10 +971,6 @@ document.addEventListener('DOMContentLoaded', () => {
       openWhatsApp(customMsg);
     });
   });
-
-  /* ==========================================================================
-     14. Contact Form Submission via WhatsApp
-     ========================================================================== */
 
   const contactForm = document.getElementById('contactForm');
   const formSuccess = document.getElementById('formSuccess');
@@ -968,12 +1033,12 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       if (formIsValid) {
-        const nameVal = fields.name.value.trim();
-        const emailVal = fields.email.value.trim();
-        const phoneVal = fields.phone.value.trim();
+        const nameVal = fields.name ? fields.name.value.trim() : '';
+        const emailVal = fields.email ? fields.email.value.trim() : '';
+        const phoneVal = fields.phone ? fields.phone.value.trim() : '';
         const serviceSelect = fields.service;
-        const serviceVal = serviceSelect.options[serviceSelect.selectedIndex].text;
-        const messageVal = fields.message.value.trim();
+        const serviceVal = (serviceSelect && serviceSelect.selectedIndex >= 0) ? serviceSelect.options[serviceSelect.selectedIndex].text : '';
+        const messageVal = fields.message ? fields.message.value.trim() : '';
 
         const submitBtn = contactForm.querySelector('button[type="submit"]');
         if (submitBtn) {
@@ -1002,7 +1067,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================================
-     15. Generic Modal Utilities
+     17. Generic Modal Utilities & Keyboard Accessibility
      ========================================================================== */
 
   function openModal(modal) {
@@ -1045,7 +1110,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ==========================================================================
-     16. Scroll Reveal Observer
+     18. Scroll Reveal Observer
      ========================================================================== */
 
   const revealElements = document.querySelectorAll(`
@@ -1063,20 +1128,22 @@ document.addEventListener('DOMContentLoaded', () => {
     [data-reveal]
   `);
 
-  const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        revealObserver.unobserve(entry.target);
-      }
+  if (revealElements.length > 0) {
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.1,
+      rootMargin: '0px 0px -40px 0px'
     });
-  }, {
-    threshold: 0.1,
-    rootMargin: '0px 0px -40px 0px'
-  });
 
-  revealElements.forEach(el => {
-    el.classList.add('reveal');
-    revealObserver.observe(el);
-  });
+    revealElements.forEach(el => {
+      el.classList.add('reveal');
+      revealObserver.observe(el);
+    });
+  }
 });
