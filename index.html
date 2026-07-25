@@ -102,25 +102,22 @@
   <meta name="msapplication-TileImage" content="assets/mstile-144x144.png">
   <meta name="msapplication-config" content="browserconfig.xml">
 
-  <!-- ===== GOOGLE ANALYTICS 4 (GA4) INTEGRATION ===== -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-64LK8RN9L0"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
+  <!-- Google Analytics 4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-8J6TDNGTRL"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
 
-    gtag('config', 'G-64LK8RN9L0', {
-      'send_page_view': true,
-      'anonymize_ip': true,
-      'cookie_flags': 'SameSite=None;Secure'
-    });
+  gtag('js', new Date());
 
-    function trackGA4Event(eventName, eventParams) {
-      if (typeof gtag === 'function') {
-        gtag('event', eventName, eventParams || {});
-      }
-    }
-  </script>
+  gtag('config', 'G-8J6TDNGTRL', {
+    send_page_view: true
+  });
+
+  function trackGA4Event(eventName, eventParams = {}) {
+    gtag('event', eventName, eventParams);
+  }
+</script>
   
   <!-- ===== INLINED CRITICAL CSS FOR ABOVE-THE-FOLD PAINT PERFORMANCE ===== -->
   <style id="critical-css">
