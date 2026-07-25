@@ -439,7 +439,7 @@
             "name": "How much does video editing cost at Crazex Studio?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Video editing packages start from ৳3,499 BDT/month in monthly plans, and standalone real video edits start at ৳400-৳600 BDT per minute."
+              "text": "Video editing packages start from ৳4,590 BDT/month in monthly plans, and standalone real video edits start at ৳400-৳600 BDT per minute."
             }
           },
           {
@@ -504,11 +504,11 @@
         "@type": "Product",
         "@id": "https://crazexstudiobd.com/#starter-package",
         "name": "Starter Package",
-        "description": "Perfect for small businesses starting social media content and basic video editing.",
+        "description": "8 Premium Posters and 2 Short Reels designed for growing brands.",
         "brand": { "@id": "https://crazexstudiobd.com/#organization" },
         "offers": {
           "@type": "Offer",
-          "price": "3499",
+          "price": "4590",
           "priceCurrency": "BDT",
           "availability": "https://schema.org/InStock",
           "url": "https://crazexstudiobd.com/#pricing"
@@ -525,11 +525,11 @@
         "@type": "Product",
         "@id": "https://crazexstudiobd.com/#growth-package",
         "name": "Growth Package",
-        "description": "Our most popular monthly creative package including premium posters, AI and video editing.",
+        "description": "Our most popular monthly creative package with 12 Premium Posters and 4 Short Reels.",
         "brand": { "@id": "https://crazexstudiobd.com/#organization" },
         "offers": {
           "@type": "Offer",
-          "price": "6499",
+          "price": "7390",
           "priceCurrency": "BDT",
           "availability": "https://schema.org/InStock",
           "url": "https://crazexstudiobd.com/#pricing"
@@ -546,11 +546,11 @@
         "@type": "Product",
         "@id": "https://crazexstudiobd.com/#business-package",
         "name": "Business Package",
-        "description": "Full-service creative partnership for growing brands with posters, AI videos, and video edits.",
+        "description": "Full-service creative partnership with 20 Premium Posters and 8 Short Reels.",
         "brand": { "@id": "https://crazexstudiobd.com/#organization" },
         "offers": {
           "@type": "Offer",
-          "price": "9499",
+          "price": "12990",
           "priceCurrency": "BDT",
           "availability": "https://schema.org/InStock",
           "url": "https://crazexstudiobd.com/#pricing"
@@ -567,11 +567,11 @@
         "@type": "Product",
         "@id": "https://crazexstudiobd.com/#premium-package",
         "name": "Premium Package",
-        "description": "Enterprise-grade creative solutions for market leaders including dedicated creative teams.",
+        "description": "Enterprise-grade creative solutions including 30 Premium Posters and 15 Short Reels.",
         "brand": { "@id": "https://crazexstudiobd.com/#organization" },
         "offers": {
           "@type": "Offer",
-          "price": "14499",
+          "price": "20990",
           "priceCurrency": "BDT",
           "availability": "https://schema.org/InStock",
           "url": "https://crazexstudiobd.com/#pricing"
@@ -1408,7 +1408,7 @@
 <section id="essential-services" class="services-section interactive-essential-section" aria-label="Essential creative services">
   <div class="section-header">
     <span class="section-tag">Essentials</span>
-    <h2>Our Essential <span class="gradient-text">Services</span></h2>
+    2>Our Essential <span class="gradient-text">Services</span></h2>
     <p>Select your business category, choose services, and see the live total.</p>
   </div>
 
@@ -1602,7 +1602,327 @@
   </div>
 </section>
 
-<!-- Pricing Section -->
+<!-- ==================================================== -->
+<!-- UPGRADED PRICING PACKAGE SECTION                      -->
+<!-- ==================================================== -->
+<style id="pricing-upgraded-styles">
+  #pricing.pricing-section {
+    padding: 5rem 5vw;
+    background: var(--bg-primary, #050508);
+    position: relative;
+    z-index: 2;
+  }
+
+  #pricing .section-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  #pricing .pricing-toggle-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 3.5rem;
+  }
+
+  #pricing .toggle-text {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-secondary, #9ca3af);
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.3s ease;
+  }
+
+  #pricing .toggle-text.active {
+    color: var(--text-primary, #ffffff);
+  }
+
+  #pricing .save-discount-badge {
+    display: inline-block;
+    margin-left: 0.35rem;
+    background: rgba(124, 58, 237, 0.15);
+    color: var(--accent-light, #a78bfa);
+    border: 1px solid rgba(124, 58, 237, 0.4);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 12px;
+  }
+
+  #pricing .toggle-switch-btn {
+    position: relative;
+    width: 54px;
+    height: 30px;
+    background: #1e1e2d;
+    border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+    border-radius: 30px;
+    cursor: pointer;
+    outline: none;
+    transition: background 0.3s ease, border-color 0.3s ease;
+  }
+
+  #pricing .toggle-switch-btn.active {
+    background: var(--accent, #7c3aed);
+    border-color: var(--accent-light, #a78bfa);
+  }
+
+  #pricing .toggle-switch-thumb {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 22px;
+    height: 22px;
+    background: #ffffff;
+    border-radius: 50%;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  }
+
+  #pricing .toggle-switch-btn.active .toggle-switch-thumb {
+    transform: translateX(24px);
+  }
+
+  /* Desktop Grid: ALL 4 PACKAGE CARDS IN ONE ROW */
+  #pricing .pricing-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.5rem;
+    align-items: stretch;
+    width: 100%;
+    max-width: 1320px;
+    margin: 0 auto;
+  }
+
+  /* Card Structure */
+  #pricing .pricing-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: var(--bg-card, #12121a);
+    border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+    border-radius: var(--radius, 20px);
+    padding: 2rem 1.4rem;
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: var(--shadow, 0 8px 32px rgba(0, 0, 0, 0.5));
+    height: 100%;
+    overflow: hidden;
+  }
+
+  #pricing .pricing-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--border-hover, rgba(124, 58, 237, 0.4));
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+  }
+
+  /* Featured Growth Card */
+  #pricing .pricing-card.popular {
+    border: 2px solid var(--accent, #7c3aed);
+    background: linear-gradient(180deg, rgba(26, 20, 48, 0.95) 0%, var(--bg-card, #12121a) 100%);
+    box-shadow: 0 12px 35px -5px rgba(124, 58, 237, 0.3);
+  }
+
+  #pricing .popular-tag {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: linear-gradient(135deg, var(--accent-light, #a78bfa), var(--accent, #7c3aed));
+    color: #ffffff;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    padding: 4px 14px;
+    border-bottom-left-radius: 12px;
+    text-transform: uppercase;
+  }
+
+  #pricing .card-head {
+    margin-bottom: 1.25rem;
+  }
+
+  #pricing .plan-title {
+    font-family: var(--font-display, 'Space Grotesk', sans-serif);
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: var(--text-primary, #ffffff);
+    margin-bottom: 0.35rem;
+  }
+
+  #pricing .plan-sub {
+    font-size: 0.82rem;
+    color: var(--text-secondary, #9ca3af);
+    line-height: 1.4;
+    min-height: 2.5em;
+  }
+
+  /* Dynamic Price Display Block */
+  #pricing .price-block {
+    margin-bottom: 1.5rem;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  #pricing .price-block.switching {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  #pricing .main-price-line {
+    display: flex;
+    align-items: baseline;
+    gap: 0.25rem;
+    margin-bottom: 0.25rem;
+  }
+
+  #pricing .large-price {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: var(--text-primary, #ffffff);
+    letter-spacing: -0.02em;
+    font-family: var(--font-display, 'Space Grotesk', sans-serif);
+  }
+
+  #pricing .price-cycle {
+    font-size: 0.88rem;
+    color: var(--text-secondary, #9ca3af);
+    font-weight: 500;
+  }
+
+  #pricing .regular-price-line {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.35rem;
+  }
+
+  #pricing .strikethrough-price {
+    font-size: 0.88rem;
+    color: var(--text-muted, #6b7280);
+    text-decoration: line-through;
+  }
+
+  #pricing .green-discount-tag {
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 9999px;
+  }
+
+  #pricing .savings-line {
+    margin-bottom: 0.25rem;
+  }
+
+  #pricing .you-save-text {
+    font-size: 0.82rem;
+    color: #a7f3d0;
+    font-weight: 600;
+  }
+
+  #pricing .breakdown-line {
+    min-height: 1.25rem;
+  }
+
+  #pricing .monthly-equivalent {
+    font-size: 0.82rem;
+    color: var(--accent-light, #a78bfa);
+    font-weight: 700;
+  }
+
+  /* Deliverables Feature List */
+  #pricing .pricing-features-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  #pricing .pricing-feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    font-size: 0.88rem;
+    color: var(--text-secondary, #d1d5db);
+    line-height: 1.4;
+  }
+
+  #pricing .pricing-feature-item.highlight-deliverable {
+    color: var(--text-primary, #ffffff);
+  }
+
+  #pricing .feature-check-icon {
+    width: 18px;
+    height: 18px;
+    color: var(--accent-light, #a78bfa);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  #pricing .card-action {
+    margin-top: auto;
+  }
+
+  #pricing .pricing-action-btn {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border-radius: var(--radius-xs, 8px);
+    font-size: 0.92rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    outline: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    text-decoration: none;
+  }
+
+  #pricing .btn-popular-primary {
+    background: linear-gradient(135deg, var(--accent, #7c3aed), var(--accent-dark, #5b21b6));
+    color: #ffffff;
+    box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4);
+  }
+
+  #pricing .btn-popular-primary:hover {
+    box-shadow: 0 6px 24px rgba(124, 58, 237, 0.6);
+    transform: translateY(-2px);
+  }
+
+  #pricing .btn-plan-secondary {
+    background: transparent;
+    color: var(--text-primary, #ffffff);
+    border: 1.5px solid var(--border, rgba(255, 255, 255, 0.15));
+  }
+
+  #pricing .btn-plan-secondary:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+  }
+
+  /* Responsive Grid Breakpoints */
+  @media (max-width: 1023px) {
+    #pricing .pricing-cards-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr)); /* Tablet: 2 per row */
+      gap: 1.25rem;
+    }
+  }
+
+  @media (max-width: 640px) {
+    #pricing .pricing-cards-grid {
+      grid-template-columns: 1fr; /* Mobile: 1 per row */
+      gap: 1.25rem;
+    }
+  }
+</style>
+
 <section id="pricing" class="pricing-section" aria-label="Pricing plans">
   <div class="section-header">
     <span class="section-tag">Pricing</span>
@@ -1610,104 +1930,345 @@
     <p>Transparent pricing. No hidden fees. Just results.</p>
   </div>
 
-  <div class="pricing-toggle">
-    <span class="toggle-label active">Monthly</span>
-    <button class="toggle-switch" aria-label="Toggle billing period between monthly and yearly" type="button" onclick="trackGA4Event('pricing_toggle_click');">
-      <span class="toggle-thumb"></span>
+  <!-- Monthly / Yearly Billing Toggle Switch -->
+  <div class="pricing-toggle-wrapper">
+    <span class="toggle-text monthly-text active" id="pMonthlyText">Monthly</span>
+    <button class="toggle-switch-btn" id="pBillingToggle" aria-label="Toggle billing cycle between monthly and yearly" type="button" onclick="trackGA4Event('pricing_toggle_click');">
+      <span class="toggle-switch-thumb"></span>
     </button>
-    <span class="toggle-label">Yearly <span class="save-badge">Save 20%</span></span>
+    <span class="toggle-text yearly-text" id="pYearlyText">
+      Yearly
+      <span class="save-discount-badge">Save 20%</span>
+    </span>
   </div>
 
-  <div class="pricing-grid" itemscope itemtype="https://schema.org/OfferCatalog" role="list">
-    <article class="pricing-card" itemprop="itemListElement" itemscope itemtype="https://schema.org/Offer" role="listitem">
-      <div class="pricing-header">
-        <h3 itemprop="name">Starter</h3>
-        <p>Perfect for small businesses just getting started.</p>
+  <!-- 4 Package Cards in ONE ROW on Desktop -->
+  <div class="pricing-cards-grid" itemscope itemtype="https://schema.org/OfferCatalog" role="list">
+    
+    <!-- CARD 1: STARTER -->
+    <article class="pricing-card" 
+             itemscope itemtype="https://schema.org/Offer" role="listitem"
+             data-monthly-price="BDT 4,590"
+             data-monthly-period="/month"
+             data-monthly-regular="BDT 5,400"
+             data-monthly-discount="Save 15%"
+             data-monthly-saves="You Save BDT 810/month"
+             data-monthly-breakdown=""
+             data-yearly-price="BDT 44,064"
+             data-yearly-period="/year"
+             data-yearly-regular="BDT 55,080"
+             data-yearly-discount="Save 20%"
+             data-yearly-saves="You Save BDT 11,016/year"
+             data-yearly-breakdown="Only BDT 3,672/month">
+      
+      <div class="card-head">
+        <h3 class="plan-title" itemprop="name">Starter</h3>
+        <p class="plan-sub">Perfect for small businesses just getting started.</p>
       </div>
-      <div class="pricing-price" itemprop="priceSpecification" itemscope itemtype="https://schema.org/PriceSpecification">
-        <span class="currency" itemprop="priceCurrency">BDT</span>
-        <span class="amount" itemprop="price">3,499</span>
-        <span class="period">/month</span>
+
+      <div class="price-block">
+        <div class="main-price-line">
+          <span class="large-price">BDT 4,590</span>
+          <span class="price-cycle">/month</span>
+        </div>
+        <div class="regular-price-line">
+          <span class="strikethrough-price">BDT 5,400</span>
+          <span class="green-discount-tag">🟢 Save 15%</span>
+        </div>
+        <div class="savings-line">
+          <span class="you-save-text">You Save BDT 810/month</span>
+        </div>
+        <div class="breakdown-line">
+          <span class="monthly-equivalent"></span>
+        </div>
       </div>
-      <ul class="pricing-features">
-        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg> 8 Social Media Posts/Week</li>
-        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg> Basic Video Editing (2 reels)</li>
-        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg> 1 Revision</li>
-        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg> Content Calendar</li>
-        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg> Monthly Performance Report</li>
-        <li class="disabled"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg> Priority Support</li>
+
+      <ul class="pricing-features-list">
+        <li class="pricing-feature-item highlight-deliverable">
+          <svg class="feature-check-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          <strong>8 Premium Posters</strong>
+        </li>
+        <li class="pricing-feature-item highlight-deliverable">
+          <svg class="feature-check-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          <strong>2 Short Reels</strong>
+        </li>
+        <li class="pricing-feature-item">
+          <svg class="feature-check-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          High-Resolution Graphics
+        </li>
+        <li class="pricing-feature-item">
+          <svg class="feature-check-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          Standard Turnaround Time
+        </li>
       </ul>
-      <a href="https://wa.me/8801968908404" target="_blank" class="btn btn-outline btn-plan-wa" data-plan="Starter" aria-label="Book a call via WhatsApp for Starter Plan" rel="noopener noreferrer nofollow" onclick="trackGA4Event('pricing_plan_select', {'plan_name': 'Starter'});">Book a Call</a>
+
+      <div class="card-action">
+        <a href="https://wa.me/8801968908404" target="_blank" class="pricing-action-btn btn-plan-secondary btn-plan-wa" data-plan="Starter" aria-label="Book Starter Package via WhatsApp" rel="noopener noreferrer nofollow" onclick="trackGA4Event('pricing_plan_select', {'plan_name': 'Starter'});">Book a Call</a>
+      </div>
     </article>
 
-    <article class="pricing-card featured" itemprop="itemListElement" itemscope itemtype="https://schema.org/Offer" role="listitem">
-      <div class="popular-badge">Most Popular</div>
-      <div class="pricing-header">
-        <h3 itemprop="name">Growth</h3>
-        <p>For brands ready to scale their presence.</p>
+    <!-- CARD 2: GROWTH (MOST POPULAR) -->
+    <article class="pricing-card popular" 
+             itemscope itemtype="https://schema.org/Offer" role="listitem"
+             data-monthly-price="BDT 7,390"
+             data-monthly-period="/month"
+             data-monthly-regular="BDT 8,800"
+             data-monthly-discount="Save 16%"
+             data-monthly-saves="You Save BDT 1,410/month"
+             data-monthly-breakdown=""
+             data-yearly-price="BDT 70,944"
+             data-yearly-period="/year"
+             data-yearly-regular="BDT 88,680"
+             data-yearly-discount="Save 20%"
+             data-yearly-saves="You Save BDT 17,736/year"
+             data-yearly-breakdown="Only BDT 5,912/month">
+      
+      <div class="popular-tag">MOST POPULAR</div>
+
+      <div class="card-head">
+        <h3 class="plan-title" itemprop="name">Growth</h3>
+        <p class="plan-sub">For brands ready to scale their social presence.</p>
       </div>
-      <div class="pricing-price" itemprop="priceSpecification" itemscope itemtype="https://schema.org/PriceSpecification">
-        <span class="currency" itemprop="priceCurrency">BDT</span>
-        <span class="amount" itemprop="price">6,499</span>
-        <span class="period">/month</span>
+
+      <div class="price-block">
+        <div class="main-price-line">
+          <span class="large-price">BDT 7,390</span>
+          <span class="price-cycle">/month</span>
+        </div>
+        <div class="regular-price-line">
+          <span class="strikethrough-price">BDT 8,800</span>
+          <span class="green-discount-tag">🟢 Save 16%</span>
+        </div>
+        <div class="savings-line">
+          <span class="you-save-text">You Save BDT 1,410/month</span>
+        </div>
+        <div class="breakdown-line">
+          <span class="monthly-equivalent"></span>
+        </div>
       </div>
-      <ul class="pricing-features">
-        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg> 12 Premium Posters</li>
-        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg> 4 AI and Video Editing</li>
-        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg> 2 Revisions </li>
-        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg> Story + Feed Version</li>
-        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg> Weekly Strategy Calls</li>
-        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg> Priority Support</li>
+
+      <ul class="pricing-features-list">
+        <li class="pricing-feature-item highlight-deliverable">
+          <svg class="feature-check-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          <strong>12 Premium Posters</strong>
+        </li>
+        <li class="pricing-feature-item highlight-deliverable">
+          <svg class="feature-check-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          <strong>4 Short Reels</strong>
+        </li>
+        <li class="pricing-feature-item">
+          <svg class="feature-check-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          Story + Feed Formats
+        </li>
+        <li class="pricing-feature-item">
+          <svg class="feature-check-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          Priority Fast Delivery
+        </li>
       </ul>
-      <a href="https://wa.me/8801968908404" target="_blank" class="btn btn-primary btn-plan-wa" data-plan="Growth" aria-label="Contact us via WhatsApp for Growth Plan" rel="noopener noreferrer nofollow" onclick="trackGA4Event('pricing_plan_select', {'plan_name': 'Growth'});">Let's Talk</a>
+
+      <div class="card-action">
+        <a href="https://wa.me/8801968908404" target="_blank" class="pricing-action-btn btn-popular-primary btn-plan-wa" data-plan="Growth" aria-label="Choose Growth Package via WhatsApp" rel="noopener noreferrer nofollow" onclick="trackGA4Event('pricing_plan_select', {'plan_name': 'Growth'});">Let's Talk</a>
+      </div>
     </article>
 
-    <article class="pricing-card" itemprop="itemListElement" itemscope itemtype="https://schema.org/Offer" role="listitem">
-      <div class="pricing-header">
-        <h3 itemprop="name">Business</h3>
-        <p>Full-service creative partnership for growing brands.</p>
+    <!-- CARD 3: BUSINESS -->
+    <article class="pricing-card" 
+             itemscope itemtype="https://schema.org/Offer" role="listitem"
+             data-monthly-price="BDT 12,990"
+             data-monthly-period="/month"
+             data-monthly-regular="BDT 15,600"
+             data-monthly-discount="Save 17%"
+             data-monthly-saves="You Save BDT 2,610/month"
+             data-monthly-breakdown=""
+             data-yearly-price="BDT 124,704"
+             data-yearly-period="/year"
+             data-yearly-regular="BDT 155,880"
+             data-yearly-discount="Save 20%"
+             data-yearly-saves="You Save BDT 31,176/year"
+             data-yearly-breakdown="Only BDT 10,392/month">
+      
+      <div class="card-head">
+        <h3 class="plan-title" itemprop="name">Business</h3>
+        <p class="plan-sub">Full-service creative partnership for growing brands.</p>
       </div>
-      <div class="pricing-price" itemprop="priceSpecification" itemscope itemtype="https://schema.org/PriceSpecification">
-        <span class="currency" itemprop="priceCurrency">BDT</span>
-        <span class="amount" itemprop="price">9,499</span>
-        <span class="period">/month</span>
+
+      <div class="price-block">
+        <div class="main-price-line">
+          <span class="large-price">BDT 12,990</span>
+          <span class="price-cycle">/month</span>
+        </div>
+        <div class="regular-price-line">
+          <span class="strikethrough-price">BDT 15,600</span>
+          <span class="green-discount-tag">🟢 Save 17%</span>
+        </div>
+        <div class="savings-line">
+          <span class="you-save-text">You Save BDT 2,610/month</span>
+        </div>
+        <div class="breakdown-line">
+          <span class="monthly-equivalent"></span>
+        </div>
       </div>
-      <ul class="pricing-features">
-        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg> 20 Premium Posters Story + Feed Version</li>
-        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg> 8 AI Videos & Real Video Editing </li>
-        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg> Unlimited Minor Revisions</li>
-        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg> Monthly Analytics Report</li>
-        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg> 24/7 Priority Support and more</li>
-        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg> Dedicated Account Manager</li>
-        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg> Bi-Weekly Strategy Calls</li>
+
+      <ul class="pricing-features-list">
+        <li class="pricing-feature-item highlight-deliverable">
+          <svg class="feature-check-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          <strong>20 Premium Posters</strong>
+        </li>
+        <li class="pricing-feature-item highlight-deliverable">
+          <svg class="feature-check-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          <strong>8 Short Reels</strong>
+        </li>
+        <li class="pricing-feature-item">
+          <svg class="feature-check-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          Unlimited Minor Revisions
+        </li>
+        <li class="pricing-feature-item">
+          <svg class="feature-check-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          Dedicated Account Manager
+        </li>
       </ul>
-      <a href="https://wa.me/8801968908404" target="_blank" class="btn btn-outline btn-plan-wa" data-plan="Business" aria-label="Get consultation via WhatsApp for Business Plan" rel="noopener noreferrer nofollow" onclick="trackGA4Event('pricing_plan_select', {'plan_name': 'Business'});">Get Consultation</a>
+
+      <div class="card-action">
+        <a href="https://wa.me/8801968908404" target="_blank" class="pricing-action-btn btn-plan-secondary btn-plan-wa" data-plan="Business" aria-label="Choose Business Package via WhatsApp" rel="noopener noreferrer nofollow" onclick="trackGA4Event('pricing_plan_select', {'plan_name': 'Business'});">Get Consultation</a>
+      </div>
     </article>
 
-    <article class="pricing-card" itemprop="itemListElement" itemscope itemtype="https://schema.org/Offer" role="listitem">
-      <div class="pricing-header">
-        <h3 itemprop="name">Premium</h3>
-        <p>Enterprise-grade creative solutions for market leaders.</p>
+    <!-- CARD 4: PREMIUM -->
+    <article class="pricing-card" 
+             itemscope itemtype="https://schema.org/Offer" role="listitem"
+             data-monthly-price="BDT 20,990"
+             data-monthly-period="/month"
+             data-monthly-regular="BDT 25,500"
+             data-monthly-discount="Save 18%"
+             data-monthly-saves="You Save BDT 4,510/month"
+             data-monthly-breakdown=""
+             data-yearly-price="BDT 201,504"
+             data-yearly-period="/year"
+             data-yearly-regular="BDT 251,880"
+             data-yearly-discount="Save 20%"
+             data-yearly-saves="You Save BDT 50,376/year"
+             data-yearly-breakdown="Only BDT 16,792/month">
+      
+      <div class="card-head">
+        <h3 class="plan-title" itemprop="name">Premium</h3>
+        <p class="plan-sub">Enterprise-grade creative solutions for market leaders.</p>
       </div>
-      <div class="pricing-price" itemprop="priceSpecification" itemscope itemtype="https://schema.org/PriceSpecification">
-        <span class="currency" itemprop="priceCurrency">BDT</span>
-        <span class="amount" itemprop="price">14,499</span>
-        <span class="period">/month</span>
+
+      <div class="price-block">
+        <div class="main-price-line">
+          <span class="large-price">BDT 20,990</span>
+          <span class="price-cycle">/month</span>
+        </div>
+        <div class="regular-price-line">
+          <span class="strikethrough-price">BDT 25,500</span>
+          <span class="green-discount-tag">🟢 Save 18%</span>
+        </div>
+        <div class="savings-line">
+          <span class="you-save-text">You Save BDT 4,510/month</span>
+        </div>
+        <div class="breakdown-line">
+          <span class="monthly-equivalent"></span>
+        </div>
       </div>
-      <ul class="pricing-features">
-        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg> 30 Premium Posters</li>
-        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg> 12 AI & Real Video Editing</li>
-        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg> Unlimited Revisions</li>
-        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg> Dedicated Creative Team</li>
-        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg> Weekly Strategy & Review Calls</li>
-        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg> Advanced Analytics & ROI Tracking</li>
-        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg> Priority Express Delivery (24h)</li>
-        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg> Full Brand Management & Consulting</li>
+
+      <ul class="pricing-features-list">
+        <li class="pricing-feature-item highlight-deliverable">
+          <svg class="feature-check-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          <strong>30 Premium Posters</strong>
+        </li>
+        <li class="pricing-feature-item highlight-deliverable">
+          <svg class="feature-check-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          <strong>15 Short Reels</strong>
+        </li>
+        <li class="pricing-feature-item">
+          <svg class="feature-check-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          Unlimited Revisions
+        </li>
+        <li class="pricing-feature-item">
+          <svg class="feature-check-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          Dedicated Creative Team
+        </li>
       </ul>
-      <a href="https://wa.me/8801968908404" target="_blank" class="btn btn-outline btn-plan-wa" data-plan="Premium" aria-label="Book a premium consultation via WhatsApp for Premium Plan" rel="noopener noreferrer nofollow" onclick="trackGA4Event('pricing_plan_select', {'plan_name': 'Premium'});">Get Premium Access</a>
+
+      <div class="card-action">
+        <a href="https://wa.me/8801968908404" target="_blank" class="pricing-action-btn btn-plan-secondary btn-plan-wa" data-plan="Premium" aria-label="Choose Premium Package via WhatsApp" rel="noopener noreferrer nofollow" onclick="trackGA4Event('pricing_plan_select', {'plan_name': 'Premium'});">Get Premium Access</a>
+      </div>
     </article>
+
   </div>
 </section>
+
+<script id="pricing-upgraded-script">
+  document.addEventListener('DOMContentLoaded', () => {
+    const toggleBtn = document.getElementById('pBillingToggle');
+    const monthlyText = document.getElementById('pMonthlyText');
+    const yearlyText = document.getElementById('pYearlyText');
+    const cards = document.querySelectorAll('#pricing .pricing-card');
+
+    if (!toggleBtn) return;
+
+    let isYearly = false;
+
+    function updatePricingState() {
+      cards.forEach((card) => {
+        const priceBlock = card.querySelector('.price-block');
+
+        priceBlock.classList.add('switching');
+
+        setTimeout(() => {
+          const price = isYearly ? card.dataset.yearlyPrice : card.dataset.monthlyPrice;
+          const period = isYearly ? card.dataset.yearlyPeriod : card.dataset.monthlyPeriod;
+          const regular = isYearly ? card.dataset.yearlyRegular : card.dataset.monthlyRegular;
+          const discount = isYearly ? card.dataset.yearlyDiscount : card.dataset.monthlyDiscount;
+          const saves = isYearly ? card.dataset.yearlySaves : card.dataset.monthlySaves;
+          const breakdown = isYearly ? card.dataset.yearlyBreakdown : card.dataset.monthlyBreakdown;
+
+          card.querySelector('.large-price').textContent = price;
+          card.querySelector('.price-cycle').textContent = period;
+          card.querySelector('.strikethrough-price').textContent = regular;
+          card.querySelector('.green-discount-tag').textContent = `🟢 ${discount}`;
+          card.querySelector('.you-save-text').textContent = saves;
+          card.querySelector('.monthly-equivalent').textContent = breakdown;
+
+          priceBlock.classList.remove('switching');
+        }, 150);
+      });
+
+      if (isYearly) {
+        toggleBtn.classList.add('active');
+        monthlyText.classList.remove('active');
+        yearlyText.classList.add('active');
+      } else {
+        toggleBtn.classList.remove('active');
+        monthlyText.classList.add('active');
+        yearlyText.classList.remove('active');
+      }
+    }
+
+    toggleBtn.addEventListener('click', () => {
+      isYearly = !isYearly;
+      updatePricingState();
+    });
+
+    if (monthlyText) {
+      monthlyText.addEventListener('click', () => {
+        if (isYearly) {
+          isYearly = false;
+          updatePricingState();
+        }
+      });
+    }
+
+    if (yearlyText) {
+      yearlyText.addEventListener('click', () => {
+        if (!isYearly) {
+          isYearly = true;
+          updatePricingState();
+        }
+      });
+    }
+  });
+</script>
 
 <!-- Additional Services Section -->
 <section id="additional-services" class="services-section additional-services-section" aria-label="Additional creative services">
@@ -1782,7 +2343,7 @@
     </div>
     <div class="service-price-card" data-reveal itemscope itemtype="https://schema.org/Product" role="listitem">
       <div class="service-icon" aria-hidden="true">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" focusable="false" aria-hidden="true"><path d="M12 2a10 10 0 0 1 0 20 10 10 0 0 1 0-20z"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" focusable="false" aria-hidden="true"><path d="M12 2a10 10 0 0 1 0 20 10 10 0 0 1 0-20z"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z"/></svg>
       </div>
       <h3 itemprop="name">Logo Animation</h3>
       <div class="service-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
@@ -2290,13 +2851,10 @@
   </div>
 </div>
 
-<!-- Modal for Website Design Showcase Details -->
 <div id="websiteModal" class="custom-modal website-modal" role="dialog" aria-modal="true" aria-label="Website Project Details">
   <div class="modal-content website-modal-content" tabindex="-1">
     <button class="close-modal" id="closeWebsiteModal" aria-label="Close website details" type="button" tabindex="0">&times;</button>
-    <div id="websiteModalBody">
-      <!-- Dynamic Popup Content inserted by script.js -->
-    </div>
+    <div id="websiteModalBody"></div>
   </div>
 </div>
 

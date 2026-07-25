@@ -923,82 +923,112 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ==========================================================================
-     15. Pricing Toggle (Monthly / Yearly Billed) & Package WhatsApp CTA
+     15. UPGRADED PRICING PACKAGE TOGGLE & WHATSAPP BOOKING INTEGRATION
      ========================================================================== */
 
-  const pricingSwitch = document.querySelector('.toggle-switch');
-  const toggleLabels = document.querySelectorAll('.pricing-toggle .toggle-label');
-  const priceAmounts = document.querySelectorAll('.pricing-card .amount');
-  const pricePeriods = document.querySelectorAll('.pricing-card .period');
-  const pricingCards = document.querySelectorAll('.pricing-card');
-
-  const originalPrices = Array.from(priceAmounts).map(el => el.textContent.trim());
+  const toggleBtn = document.getElementById('pBillingToggle') || document.querySelector('.pricing-toggle .toggle-switch');
+  const monthlyText = document.getElementById('pMonthlyText') || document.querySelectorAll('.pricing-toggle .toggle-label')[0];
+  const yearlyText = document.getElementById('pYearlyText') || document.querySelectorAll('.pricing-toggle .toggle-label')[1];
+  const pricingSectionCards = document.querySelectorAll('#pricing .pricing-card');
 
   let isYearlyBilling = false;
 
-  function updatePricing(isYearly) {
+  function updatePricingSystem(isYearly) {
     isYearlyBilling = isYearly;
-    priceAmounts.forEach((el, index) => {
-      if (!originalPrices[index]) return;
-      const rawNum = parseInt(originalPrices[index].replace(/,/g, ''), 10);
-      if (!isNaN(rawNum)) {
-        if (isYearly) {
-          const discounted = Math.round(rawNum * 0.8);
-          el.textContent = discounted.toLocaleString();
-        } else {
-          el.textContent = originalPrices[index];
-        }
+
+    pricingSectionCards.forEach((card) => {
+      const priceBlock = card.querySelector('.price-block, .price-wrapper, .pricing-price');
+
+      if (priceBlock) {
+        priceBlock.classList.add('switching');
       }
-    });
 
-    pricePeriods.forEach(el => {
-      el.textContent = isYearly ? '/month (yearly)' : '/month';
-    });
-  }
+      setTimeout(() => {
+        const currentPrice = isYearly ? card.dataset.yearlyPrice : card.dataset.monthlyPrice;
+        const period = isYearly ? card.dataset.yearlyPeriod : card.dataset.monthlyPeriod;
+        const regularPrice = isYearly ? card.dataset.yearlyRegular : card.dataset.monthlyRegular;
+        const discountTag = isYearly ? card.dataset.yearlyDiscount : card.dataset.monthlyDiscount;
+        const savesText = isYearly ? card.dataset.yearlySaves : card.dataset.monthlySaves;
+        const breakdownText = isYearly ? card.dataset.yearlyBreakdown : card.dataset.monthlyBreakdown;
 
-  if (pricingSwitch) {
-    pricingSwitch.addEventListener('click', () => {
-      const isYearly = pricingSwitch.classList.toggle('yearly');
-      toggleLabels.forEach((label, idx) => {
-        if ((idx === 0 && !isYearly) || (idx === 1 && isYearly)) {
-          label.classList.add('active');
-        } else {
-          label.classList.remove('active');
+        // DOM elements update with fallback selectors
+        const largePriceEl = card.querySelector('.large-price, .current-price, .amount');
+        const priceCycleEl = card.querySelector('.price-cycle, .price-period, .period');
+        const strikethroughPriceEl = card.querySelector('.strikethrough-price, .regular-price');
+        const greenDiscountTagEl = card.querySelector('.green-discount-tag, .discount-badge');
+        const youSaveTextEl = card.querySelector('.you-save-text, .you-save');
+        const monthlyEquivalentEl = card.querySelector('.monthly-equivalent, .monthly-breakdown');
+
+        if (largePriceEl && currentPrice) largePriceEl.textContent = currentPrice;
+        if (priceCycleEl && period) priceCycleEl.textContent = period;
+        if (strikethroughPriceEl && regularPrice) strikethroughPriceEl.textContent = regularPrice;
+        if (greenDiscountTagEl && discountTag) greenDiscountTagEl.textContent = `🟢 ${discountTag}`;
+        if (youSaveTextEl && savesText) youSaveTextEl.textContent = savesText;
+        if (monthlyEquivalentEl) monthlyEquivalentEl.textContent = breakdownText || '';
+
+        if (priceBlock) {
+          priceBlock.classList.remove('switching');
         }
-      });
-      updatePricing(isYearly);
+      }, 150);
     });
-  }
 
-  toggleLabels.forEach((label, idx) => {
-    label.addEventListener('click', () => {
-      if (!pricingSwitch) return;
-      const isYearly = idx === 1;
+    // Update Toggle Button & Label States
+    if (toggleBtn) {
       if (isYearly) {
-        pricingSwitch.classList.add('yearly');
+        toggleBtn.classList.add('active', 'yearly');
       } else {
-        pricingSwitch.classList.remove('yearly');
+        toggleBtn.classList.remove('active', 'yearly');
       }
-      if (toggleLabels[0]) toggleLabels[0].classList.toggle('active', !isYearly);
-      if (toggleLabels[1]) toggleLabels[1].classList.toggle('active', isYearly);
-      updatePricing(isYearly);
+    }
+
+    if (monthlyText) monthlyText.classList.toggle('active', !isYearly);
+    if (yearlyText) yearlyText.classList.toggle('active', isYearly);
+  }
+
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', () => {
+      isYearlyBilling = !isYearlyBilling;
+      updatePricingSystem(isYearlyBilling);
     });
-  });
+  }
 
-  // Attach WhatsApp handlers to all Pricing Plan buttons
-  pricingCards.forEach(card => {
-    const planNameEl = card.querySelector('h3');
-    const priceAmountEl = card.querySelector('.amount');
-    const planBtn = card.querySelector('.btn-plan-wa');
+  if (monthlyText) {
+    monthlyText.addEventListener('click', () => {
+      if (isYearlyBilling) {
+        updatePricingSystem(false);
+      }
+    });
+  }
 
-    if (planBtn && planNameEl && priceAmountEl) {
+  if (yearlyText) {
+    yearlyText.addEventListener('click', () => {
+      if (!isYearlyBilling) {
+        updatePricingSystem(true);
+      }
+    });
+  }
+
+  // Attach WhatsApp booking handlers to all Pricing Plan buttons
+  pricingSectionCards.forEach(card => {
+    const planBtn = card.querySelector('.btn-plan-wa, .pricing-action-btn');
+
+    if (planBtn) {
       planBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        const planName = planNameEl.textContent.trim();
-        const price = priceAmountEl.textContent.trim();
-        const billingCycle = isYearlyBilling ? 'Yearly Billed (20% Off)' : 'Monthly Billed';
+        const planNameEl = card.querySelector('.plan-title, h3');
+        const largePriceEl = card.querySelector('.large-price, .current-price, .amount');
+        const priceCycleEl = card.querySelector('.price-cycle, .price-period, .period');
+        const strikethroughPriceEl = card.querySelector('.strikethrough-price, .regular-price');
+        const youSaveTextEl = card.querySelector('.you-save-text, .you-save');
 
-        const message = `Hello Crazex Studio!\n\nI want to choose the following Package Plan:\n• Plan Name: ${planName}\n• Price: ৳${price} BDT/month\n• Billing Cycle: ${billingCycle}\n\nPlease get in touch to get started.`;
+        const planName = planNameEl ? planNameEl.textContent.trim() : 'Package Plan';
+        const price = largePriceEl ? largePriceEl.textContent.trim() : '';
+        const cycle = priceCycleEl ? priceCycleEl.textContent.trim() : '';
+        const regular = strikethroughPriceEl ? strikethroughPriceEl.textContent.trim() : '';
+        const savings = youSaveTextEl ? youSaveTextEl.textContent.trim() : '';
+        const billingType = isYearlyBilling ? 'Yearly Billed (Save 20%)' : 'Monthly Billed';
+
+        const message = `Hello Crazex Studio!\n\nI want to choose the following Package Plan:\n• Plan Name: ${planName}\n• Current Price: ${price}${cycle}\n• Regular Price: ${regular}\n• Savings: ${savings}\n• Billing Cycle: ${billingType}\n\nPlease get in touch with me to get started.`;
         openWhatsApp(message);
       });
     }
