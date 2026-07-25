@@ -1,6 +1,6 @@
 /**
  * Crazex Studio — Production Master JavaScript
- * Version: 2026.2 (Fully Consolidated, Optimized & Exception-Safe)
+ * Version: 2026.2 (Fully Consolidated, Mobile-Optimized & Exception-Safe)
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
      ========================================================================== */
 
   const WHATSAPP_NUMBER = '8801968908404';
+  const isTouchDevice = window.matchMedia('(pointer: coarse)').matches || window.innerWidth <= 992;
 
   // Global GA4 Event Tracking Helper
   window.trackGA4Event = function(eventName, eventParams) {
@@ -304,7 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
         scrollProgressBar.style.width = `${scrollPercent}%`;
       }
 
-      if (floatingTrack && floatingThumb) {
+      if (floatingTrack && floatingThumb && !isTouchDevice) {
         const trackHeight = floatingTrack.clientHeight;
         const thumbHeight = Math.max(40, (windowHeight / docHeight) * trackHeight);
         floatingThumb.style.height = `${thumbHeight}px`;
@@ -339,8 +340,8 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('scroll', onScrollThrottled, { passive: true });
   window.addEventListener('resize', onScrollThrottled, { passive: true });
 
-  // Floating Drag Logic
-  if (floatingTrack && floatingThumb) {
+  // Floating Drag Logic (Desktop Only)
+  if (floatingTrack && floatingThumb && !isTouchDevice) {
     const startDrag = (e) => {
       isDraggingThumb = true;
       dragStartY = e.clientY || (e.touches && e.touches[0].clientY);
@@ -376,60 +377,62 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================================
-     6. Custom Cursor & Mouse Glow Tracking (rAF Optimized)
+     6. Custom Cursor & Mouse Glow Tracking (Desktop Only, Bypassed on Mobile)
      ========================================================================== */
 
   let mouseX = 0, mouseY = 0;
   let ringX = 0, ringY = 0;
   let isTickingMouse = false;
 
-  window.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
+  if (!isTouchDevice) {
+    window.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
 
-    if (!isTickingMouse) {
-      requestAnimationFrame(() => {
-        if (cursorDot) {
-          cursorDot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
-        }
-        if (mouseGlow) {
-          mouseGlow.style.setProperty('--mouse-x', `${mouseX}px`);
-          mouseGlow.style.setProperty('--mouse-y', `${mouseY}px`);
-        }
-        isTickingMouse = false;
-      });
-      isTickingMouse = true;
-    }
-  }, { passive: true });
-
-  function animateCursorRing() {
-    ringX += (mouseX - ringX) * 0.15;
-    ringY += (mouseY - ringY) * 0.15;
-
-    if (cursorRing) {
-      cursorRing.style.transform = `translate3d(${ringX}px, ${ringY}px, 0)`;
-    }
-
-    requestAnimationFrame(animateCursorRing);
-  }
-
-  if (customCursor && cursorRing) {
-    animateCursorRing();
-  }
-
-  // Hover Scale Effects for Interactive Elements
-  const interactiveSelector = 'a, button, .service-card, .portfolio-card, .video-embed-card, .poster-card, .pricing-card, .interactive-card, .team-card, .why-choose-card, .terms-card, .website-card, .floating-card';
-  document.querySelectorAll(interactiveSelector).forEach(el => {
-    el.addEventListener('mouseenter', () => {
-      if (customCursor) customCursor.classList.add('hover');
+      if (!isTickingMouse) {
+        requestAnimationFrame(() => {
+          if (cursorDot) {
+            cursorDot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
+          }
+          if (mouseGlow) {
+            mouseGlow.style.setProperty('--mouse-x', `${mouseX}px`);
+            mouseGlow.style.setProperty('--mouse-y', `${mouseY}px`);
+          }
+          isTickingMouse = false;
+        });
+        isTickingMouse = true;
+      }
     }, { passive: true });
-    el.addEventListener('mouseleave', () => {
-      if (customCursor) customCursor.classList.remove('hover');
-    }, { passive: true });
-  });
+
+    function animateCursorRing() {
+      ringX += (mouseX - ringX) * 0.15;
+      ringY += (mouseY - ringY) * 0.15;
+
+      if (cursorRing) {
+        cursorRing.style.transform = `translate3d(${ringX}px, ${ringY}px, 0)`;
+      }
+
+      requestAnimationFrame(animateCursorRing);
+    }
+
+    if (customCursor && cursorRing) {
+      animateCursorRing();
+    }
+
+    // Hover Scale Effects for Interactive Elements
+    const interactiveSelector = 'a, button, .service-card, .portfolio-card, .video-embed-card, .poster-card, .pricing-card, .interactive-card, .team-card, .why-choose-card, .terms-card, .website-card, .floating-card';
+    document.querySelectorAll(interactiveSelector).forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        if (customCursor) customCursor.classList.add('hover');
+      }, { passive: true });
+      el.addEventListener('mouseleave', () => {
+        if (customCursor) customCursor.classList.remove('hover');
+      }, { passive: true });
+    });
+  }
 
   /* ==========================================================================
-     7. Navigation & Active Nav Link Highlighting
+     7. Navigation & Active Nav Link Highlighting & Mobile Overlay Menu
      ========================================================================== */
 
   function updateActiveNavLink(currentScrollY) {
@@ -452,20 +455,39 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  function toggleMobileMenu(forceClose) {
+    if (!mobileMenu || !mobileMenuBtn) return;
+    const shouldClose = forceClose !== undefined ? forceClose : mobileMenu.classList.contains('active');
+
+    if (shouldClose) {
+      mobileMenu.classList.remove('active');
+      mobileMenuBtn.setAttribute('aria-expanded', 'false');
+      mobileMenu.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    } else {
+      mobileMenu.classList.add('active');
+      mobileMenuBtn.setAttribute('aria-expanded', 'true');
+      mobileMenu.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
   if (mobileMenuBtn && mobileMenu) {
-    mobileMenuBtn.addEventListener('click', () => {
-      const isOpen = mobileMenu.classList.contains('active');
-      mobileMenu.classList.toggle('active');
-      mobileMenuBtn.setAttribute('aria-expanded', String(!isOpen));
-      mobileMenu.setAttribute('aria-hidden', String(isOpen));
+    mobileMenuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleMobileMenu();
     });
 
     mobileMenu.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', () => {
-        mobileMenu.classList.remove('active');
-        mobileMenuBtn.setAttribute('aria-expanded', 'false');
-        mobileMenu.setAttribute('aria-hidden', 'true');
+        toggleMobileMenu(true);
       });
+    });
+
+    document.addEventListener('click', (e) => {
+      if (mobileMenu.classList.contains('active') && !mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+        toggleMobileMenu(true);
+      }
     });
   }
 
@@ -496,7 +518,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================================
-     9. Particles Canvas Engine
+     9. Particles Canvas Engine (Mobile Performance Scaled)
      ========================================================================== */
 
   const canvas = document.getElementById('particles');
@@ -546,7 +568,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function initParticles() {
       particlesArray = [];
-      const particleCount = Math.min(Math.floor(width / 18), 70);
+      const densityDivisor = width <= 576 ? 32 : 18;
+      const maxCount = width <= 576 ? 20 : 70;
+      const particleCount = Math.min(Math.floor(width / densityDivisor), maxCount);
+
       for (let i = 0; i < particleCount; i++) {
         particlesArray.push(new Particle());
       }
@@ -599,7 +624,7 @@ document.addEventListener('DOMContentLoaded', () => {
           });
         }
       });
-    }, { threshold: 0.5 });
+    }, { threshold: 0.3 });
 
     const statsSection = document.querySelector('.stats');
     if (statsSection) {
@@ -625,14 +650,14 @@ document.addEventListener('DOMContentLoaded', () => {
         serviceDetailsTarget.innerHTML = `
           <div class="service-modal-header" style="text-align: center; margin-bottom: 1.5rem;">
             <div class="service-icon" style="margin: 0 auto 1rem; width: 64px; height: 64px;">${data.icon}</div>
-            <h2 style="font-family: var(--font-display); font-size: 1.8rem; margin-bottom: 0.5rem;">${data.title}</h2>
+            <h2 style="font-family: var(--font-display); font-size: clamp(1.4rem, 5vw, 1.8rem); margin-bottom: 0.5rem;">${data.title}</h2>
           </div>
-          <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 1.5rem; text-align: center;">${data.description}</p>
-          <div class="service-modal-features" style="background: var(--bg-primary); padding: 1.5rem; border-radius: var(--radius-sm); border: 1px solid var(--border); margin-bottom: 2rem;">
+          <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 1.5rem; text-align: center; font-size: 0.95rem;">${data.description}</p>
+          <div class="service-modal-features" style="background: var(--bg-primary); padding: 1.25rem; border-radius: var(--radius-sm); border: 1px solid var(--border); margin-bottom: 2rem;">
             <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: 1rem; color: var(--accent-light);">Key Features Included:</h4>
             <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.75rem;">
               ${data.features.map(f => `
-                <li style="display: flex; align-items: center; gap: 0.6rem; color: var(--text-secondary); font-size: 0.95rem;">
+                <li style="display: flex; align-items: center; gap: 0.6rem; color: var(--text-secondary); font-size: 0.92rem;">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--accent); flex-shrink: 0;"><path d="M20 6 9 17l-5-5"/></svg>
                   <span>${f}</span>
                 </li>
@@ -640,7 +665,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </ul>
           </div>
           <div style="text-align: center;">
-            <button type="button" class="btn btn-primary btn-full modal-wa-inquire-btn" style="justify-content: center;">
+            <button type="button" class="btn btn-primary btn-full modal-wa-inquire-btn" style="justify-content: center; min-height: 48px;">
               <span>Inquire About This Service</span>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
             </button>
@@ -664,29 +689,49 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ==========================================================================
-     12. Graphics Design Showcase Slider (Horizontal Carousel)
+     12. Graphics Design Showcase Slider (Buttons & Touch Drag/Swipe)
      ========================================================================== */
 
   const graphicsSlider = document.getElementById('graphicsSlider');
   const prevBtn = document.querySelector('.slider-btn.prev-btn');
   const nextBtn = document.querySelector('.slider-btn.next-btn');
 
-  if (graphicsSlider && prevBtn && nextBtn) {
+  if (graphicsSlider) {
     const scrollAmount = 280;
 
-    prevBtn.addEventListener('click', () => {
-      graphicsSlider.scrollBy({
-        left: -scrollAmount,
-        behavior: 'smooth'
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => {
+        graphicsSlider.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
       });
-    });
+    }
 
-    nextBtn.addEventListener('click', () => {
-      graphicsSlider.scrollBy({
-        left: scrollAmount,
-        behavior: 'smooth'
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        graphicsSlider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
       });
-    });
+    }
+
+    // Touch Swipe Gesture Handling for Mobile
+    let startX = 0;
+    let scrollLeftPos = 0;
+    let isDown = false;
+
+    graphicsSlider.addEventListener('touchstart', (e) => {
+      isDown = true;
+      startX = e.touches[0].pageX - graphicsSlider.offsetLeft;
+      scrollLeftPos = graphicsSlider.scrollLeft;
+    }, { passive: true });
+
+    graphicsSlider.addEventListener('touchmove', (e) => {
+      if (!isDown) return;
+      const x = e.touches[0].pageX - graphicsSlider.offsetLeft;
+      const walk = (x - startX) * 1.2;
+      graphicsSlider.scrollLeft = scrollLeftPos - walk;
+    }, { passive: true });
+
+    graphicsSlider.addEventListener('touchend', () => {
+      isDown = false;
+    }, { passive: true });
   }
 
   /* ==========================================================================
@@ -707,7 +752,7 @@ document.addEventListener('DOMContentLoaded', () => {
         websiteModalBody.innerHTML = `
           <div class="website-modal-header">
             <span class="project-type-badge ${data.badgeClass}">${data.badge}</span>
-            <h2 style="margin-top: 0.5rem; font-family: var(--font-display); font-size: 1.8rem; color: var(--text-primary);">${data.title}</h2>
+            <h2 style="margin-top: 0.5rem; font-family: var(--font-display); font-size: clamp(1.4rem, 5vw, 1.8rem); color: var(--text-primary);">${data.title}</h2>
           </div>
 
           <div class="modal-section-grid">
@@ -763,7 +808,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="modal-cta-box">
             <h3>Want a Website Like This For Your Business?</h3>
             <p>Get in touch with Crazex Studio today for custom web design, fast delivery, and premium growth-driven results.</p>
-            <button type="button" class="btn btn-primary modal-wa-website-btn" style="padding: 0.9rem 2rem;">
+            <button type="button" class="btn btn-primary btn-full modal-wa-website-btn" style="padding: 0.9rem 1.5rem; min-height: 48px;">
               <span>Request Custom Website Quote</span>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
             </button>
@@ -1103,8 +1148,7 @@ document.addEventListener('DOMContentLoaded', () => {
         closeModal(modal);
       });
       if (mobileMenu && mobileMenu.classList.contains('active')) {
-        mobileMenu.classList.remove('active');
-        if (mobileMenuBtn) mobileMenuBtn.setAttribute('aria-expanded', 'false');
+        toggleMobileMenu(true);
       }
     }
   });

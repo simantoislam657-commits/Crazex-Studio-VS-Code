@@ -161,9 +161,9 @@
       --border: rgba(0, 0, 0, 0.08);
     }
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; scroll-padding-top: 80px; font-size: 16px; overflow-x: hidden; }
-    body { font-family: var(--font-primary); background: var(--bg-primary); color: var(--text-primary); line-height: 1.7; overflow-x: hidden; min-height: 100vh; -webkit-font-smoothing: antialiased; }
-    img, video { max-width: 100%; height: auto; display: block; }
+    html { scroll-behavior: smooth; scroll-padding-top: 80px; font-size: 16px; overflow-x: hidden; width: 100%; }
+    body { font-family: var(--font-primary); background: var(--bg-primary); color: var(--text-primary); line-height: 1.7; overflow-x: hidden; width: 100%; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+    img, video, iframe { max-width: 100%; height: auto; display: block; }
     .no-js .page-loader { display: none !important; }
     @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
     .skip-link { position: absolute; top: -100px; left: 1rem; background: var(--accent); color: #fff; padding: 0.75rem 1.5rem; z-index: 10000; border-radius: var(--radius-xs); text-decoration: none; font-weight: 600; }
@@ -182,20 +182,20 @@
     .nav-actions { display: flex; align-items: center; gap: 1rem; }
     #themeToggle { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-primary); font-size: 1.1rem; padding: 0.5rem 0.85rem; border-radius: var(--radius-xs); cursor: pointer; min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center; }
     .mobile-menu-btn { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 0.5rem; min-width: 44px; min-height: 44px; align-items: center; justify-content: center; }
-    .mobile-menu-btn span { display: block; width: 24px; height: 2px; background: var(--text-primary); border-radius: 2px; }
-    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.9rem 2rem; font-size: 0.95rem; font-weight: 600; text-decoration: none; border-radius: var(--radius-xs); transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer; border: none; min-height: 44px; }
+    .mobile-menu-btn span { display: block; width: 24px; height: 2px; background: var(--text-primary); border-radius: 2px; transition: transform 0.3s ease, opacity 0.3s ease; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.9rem 2rem; font-size: 0.95rem; font-weight: 600; text-decoration: none; border-radius: var(--radius-xs); transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer; border: none; min-height: 44px; max-width: 100%; }
     .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color: #fff; box-shadow: 0 4px 24px rgba(var(--accent-rgb), 0.4); }
     .btn-secondary { background: transparent; color: var(--text-primary); border: 1.5px solid var(--border); }
     .btn-sm { padding: 0.6rem 1.4rem; font-size: 0.85rem; }
     .gradient-text { background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-light) 50%, var(--accent) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .hero { display: flex; align-items: center; justify-content: space-between; min-height: 100vh; min-height: 100dvh; padding: 9rem 5vw 5rem; gap: 4rem; position: relative; overflow: hidden; z-index: 2; }
     .hero-content { flex: 1; max-width: 640px; position: relative; z-index: 2; }
-    .badge { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.5rem 1.2rem; background: rgba(var(--accent-rgb), 0.08); border: 1px solid rgba(var(--accent-rgb), 0.15); border-radius: 100px; font-size: 0.82rem; font-weight: 500; color: var(--accent-light); margin-bottom: 1.5rem; }
-    .badge-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
+    .badge { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.5rem 1.2rem; background: rgba(var(--accent-rgb), 0.08); border: 1px solid rgba(var(--accent-rgb), 0.15); border-radius: 100px; font-size: 0.82rem; font-weight: 500; color: var(--accent-light); margin-bottom: 1.5rem; max-width: 100%; }
+    .badge-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; flex-shrink: 0; animation: pulse 2s ease-in-out infinite; }
     @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.2); } }
-    .hero-content h1 { font-family: var(--font-display); font-size: clamp(2.8rem, 6vw, 4.5rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.04em; margin-bottom: 1.5rem; }
+    .hero-content h1 { font-family: var(--font-display); font-size: clamp(1.75rem, 6vw, 4.5rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.03em; margin-bottom: 1.5rem; word-wrap: break-word; overflow-wrap: break-word; }
     .hero-content h1 .line { display: block; }
-    .hero-desc { font-size: 1.15rem; color: var(--text-secondary); line-height: 1.8; margin-bottom: 2.5rem; max-width: 520px; }
+    .hero-desc { font-size: 1.15rem; color: var(--text-secondary); line-height: 1.8; margin-bottom: 2.5rem; max-width: 520px; word-wrap: break-word; }
     .buttons { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 3rem; }
     .stats { display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; }
     .stat { display: flex; flex-direction: column; }
@@ -203,8 +203,8 @@
     .stat-suffix { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; color: var(--accent-light); }
     .stat-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem; }
     .stat-divider { width: 1px; height: 40px; background: var(--border); }
-    .hero-videos { flex: 1; display: flex; flex-direction: column; gap: 1rem; max-width: 400px; position: relative; z-index: 2; }
-    .video-card { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); background: var(--bg-card); aspect-ratio: 16/9; position: relative; }
+    .hero-videos { flex: 1; display: flex; flex-direction: column; gap: 1rem; max-width: 400px; position: relative; z-index: 2; width: 100%; }
+    .video-card { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); background: var(--bg-card); aspect-ratio: 16/9; position: relative; width: 100%; }
     .video-card video { width: 100%; height: 100%; object-fit: cover; display: block; }
     .video-overlay { position: absolute; bottom: 0; left: 0; right: 0; padding: 1.5rem; background: linear-gradient(transparent, rgba(5, 5, 8, 0.9)); z-index: 3; }
     .video-tag { display: inline-block; padding: 0.25rem 0.7rem; background: rgba(var(--accent-rgb), 0.2); border: 1px solid rgba(var(--accent-rgb), 0.3); border-radius: 100px; font-size: 0.7rem; font-weight: 600; color: var(--accent-light); text-transform: uppercase; margin-bottom: 0.5rem; }
@@ -215,14 +215,41 @@
     .hero-content .hero-desc { animation-delay: 0.35s; }
     .hero-content .buttons { animation-delay: 0.5s; }
     .hero-content .stats { animation-delay: 0.65s; }
+
+    /* Modern Responsive Breakpoints */
     @media (max-width: 992px) {
-      .hero { flex-direction: column; text-align: center; padding-top: 8rem; }
-      .hero-content { max-width: 100%; }
+      .hero { flex-direction: column; text-align: center; padding: 7.5rem 4vw 4rem; gap: 3rem; }
+      .hero-content { max-width: 100%; width: 100%; }
       .buttons, .stats { justify-content: center; }
       .hero-videos { max-width: 100%; width: 100%; flex-direction: row; flex-wrap: wrap; }
-      .video-card { flex: 1; min-width: 200px; }
+      .video-card { flex: 1 1 240px; min-width: 0; }
       nav { display: none; }
       .mobile-menu-btn { display: flex; }
+    }
+    @media (max-width: 576px) {
+      .navbar { padding: 0.85rem 1rem; }
+      .navbar.scrolled { padding: 0.65rem 1rem; }
+      .logo-text { font-size: 1.15rem; }
+      #brand-logo { width: 32px; height: 32px; }
+      .nav-actions .btn-wa { display: none; }
+      .hero { padding: 6.5rem 1rem 3rem; gap: 2.25rem; }
+      .badge { font-size: 0.78rem; padding: 0.4rem 0.85rem; max-width: 100%; text-align: center; justify-content: center; }
+      .hero-content h1 { font-size: clamp(1.7rem, 8vw, 2.5rem); line-height: 1.2; margin-bottom: 1.25rem; }
+      .hero-desc { font-size: 0.98rem; line-height: 1.6; margin-bottom: 2rem; text-align: center; }
+      .buttons { flex-direction: column; width: 100%; gap: 0.75rem; margin-bottom: 2.25rem; }
+      .buttons .btn { width: 100%; justify-content: center; min-height: 48px; padding: 0.85rem 1.25rem; }
+      .stats { gap: 1.25rem; justify-content: space-around; width: 100%; }
+      .stat-divider { display: none; }
+      .stat-number { font-size: 1.65rem; }
+      .stat-suffix { font-size: 1.25rem; }
+      .stat-label { font-size: 0.75rem; }
+      .hero-videos { flex-direction: column; width: 100%; gap: 1rem; }
+      .video-card { width: 100%; flex: none; }
+      .video-overlay { padding: 1rem; }
+    }
+    @media (max-width: 360px) {
+      .hero-content h1 { font-size: clamp(1.5rem, 7.5vw, 2rem); }
+      .stats { flex-direction: column; align-items: center; gap: 1rem; }
     }
   </style>
   
@@ -1902,17 +1929,17 @@
           </div>
         </a>
 
-        <a href="https://www.instagram.com/crazex.studio01/" class="contact-method" target="_blank" rel="noopener noreferrer nofollow" aria-label="Visit Instagram profile" onclick="trackGA4Event('social_click', {'platform': 'Instagram'});">
+        <a href="https://www.instagram.com/crazex_studio/" class="contact-method" target="_blank" rel="noopener noreferrer nofollow" aria-label="Visit Instagram profile" onclick="trackGA4Event('social_click', {'platform': 'Instagram'});">
           <div class="contact-icon" aria-hidden="true">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" focusable="false" aria-hidden="true"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
           </div>
           <div>
             <span class="method-label">Instagram</span>
-            <span class="method-value">crazex.studio01</span> 
+            <span class="method-value">crazex_studio</span> 
           </div>
         </a>
 
-        <a href="https://www.youtube.com/@crazexstudio" class="contact-method" target="_blank" rel="noopener noreferrer nofollow" aria-label="Visit YouTube channel" onclick="trackGA4Event('social_click', {'platform': 'YouTube'});">
+        <a href="https://www.youtube.com/@CrazexStudio" class="contact-method" target="_blank" rel="noopener noreferrer nofollow" aria-label="Visit YouTube channel" onclick="trackGA4Event('social_click', {'platform': 'YouTube'});">
           <div class="contact-icon" aria-hidden="true">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" focusable="false" aria-hidden="true"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.42a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.42 8.6.42 8.6.42s6.88 0 8.6-.42a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg>
           </div>
@@ -1922,7 +1949,7 @@
           </div>
         </a>
 
-        <a href="https://www.tiktok.com/@crazex.studio" class="contact-method" target="_blank" rel="noopener noreferrer nofollow" aria-label="Visit TikTok profile" onclick="trackGA4Event('social_click', {'platform': 'TikTok'});">
+        <a href="https://www.tiktok.com/@crazexstudio" class="contact-method" target="_blank" rel="noopener noreferrer nofollow" aria-label="Visit TikTok profile" onclick="trackGA4Event('social_click', {'platform': 'TikTok'});">
           <div class="contact-icon" aria-hidden="true">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" focusable="false" aria-hidden="true"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>
           </div>
