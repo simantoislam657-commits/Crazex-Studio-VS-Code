@@ -1,34 +1,60 @@
 /**
  * Crazex Studio — Production Master JavaScript
- * Version: 2026.2 (Fully Consolidated, Mobile-Optimized & Exception-Safe)
+ * Version: 2026.3 (Awwwards-Grade Interactivity, Performance Optimized & Motion Design)
  */
 
 document.addEventListener('DOMContentLoaded', () => {
   'use strict';
 
   /* ==========================================================================
-     1. Global Constants & Safe Helper Utilities
+     1. Global Constants, Feature Detection & Performance Utilities
      ========================================================================== */
 
   const WHATSAPP_NUMBER = '8801968908404';
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const isTouchDevice = window.matchMedia('(pointer: coarse)').matches || window.innerWidth <= 992;
 
+  // High-performance Throttle Utility (RAF-bound)
+  function rafThrottle(fn) {
+    let ticking = false;
+    return function (...args) {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          fn.apply(this, args);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+  }
+
+  // Debounce Helper
+  function debounce(fn, delay = 150) {
+    let timeoutId;
+    return function (...args) {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => fn.apply(this, args), delay);
+    };
+  }
+
   // Global GA4 Event Tracking Helper
-  window.trackGA4Event = function(eventName, eventParams) {
+  window.trackGA4Event = function (eventName, eventParams) {
     if (typeof window.gtag === 'function') {
       window.gtag('event', eventName, eventParams || {});
     }
   };
 
+  // WhatsApp Routing Utility
   function openWhatsApp(message) {
     try {
       const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
       window.open(url, '_blank', 'noopener,noreferrer');
     } catch (e) {
-      // Safe fallback
+      console.warn('WhatsApp launch error:', e);
     }
   }
 
+  // Safe Storage Accessors
   function safeStorageGet(key) {
     try {
       return localStorage.getItem(key);
@@ -41,12 +67,12 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       localStorage.setItem(key, value);
     } catch (e) {
-      // Storage restricted or disabled
+      // Storage restricted or quota exceeded
     }
   }
 
   /* ==========================================================================
-     2. Data Structures (Services & Website Showcase)
+     2. Comprehensive Data Structures (Services & Website Case Studies)
      ========================================================================== */
 
   const servicesData = {
@@ -267,9 +293,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const sections = document.querySelectorAll('section[id]');
   const floatingTrack = document.getElementById('floatingScrollbarTrack');
   const floatingThumb = document.getElementById('floatingScrollbarThumb');
+  let lastFocusedElement = null;
 
   /* ==========================================================================
-     4. Page Loader Management
+     4. Page Loader Management & Smooth Entrance Sequence
      ========================================================================== */
 
   const hideLoader = () => {
@@ -277,21 +304,25 @@ document.addEventListener('DOMContentLoaded', () => {
       pageLoader.style.opacity = '0';
       setTimeout(() => {
         pageLoader.style.display = 'none';
+        document.body.classList.add('page-loaded');
       }, 400);
     }
   };
 
-  window.addEventListener('load', hideLoader, { once: true });
-  setTimeout(hideLoader, 1500);
+  if (document.readyState === 'complete') {
+    hideLoader();
+  } else {
+    window.addEventListener('load', hideLoader, { once: true });
+    setTimeout(hideLoader, 1200);
+  }
 
   /* ==========================================================================
-     5. Scroll Progress, Floating Scrollbar & Throttled Scroll Observer
+     5. Scroll Progress, Floating Scrollbar & RAF Throttled Scroll Observer
      ========================================================================== */
 
   let isDraggingThumb = false;
   let dragStartY = 0;
   let startScrollTop = 0;
-  let isTickingScroll = false;
 
   function updateScrollPositions() {
     const windowHeight = window.innerHeight;
@@ -317,7 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (navbar) {
-      if (scrollY > 50) {
+      if (scrollY > 40) {
         navbar.classList.add('scrolled');
       } else {
         navbar.classList.remove('scrolled');
@@ -325,22 +356,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     updateActiveNavLink(scrollY);
+    handleSubtleParallax(scrollY);
   }
 
-  const onScrollThrottled = () => {
-    if (!isTickingScroll) {
-      requestAnimationFrame(() => {
-        updateScrollPositions();
-        isTickingScroll = false;
-      });
-      isTickingScroll = true;
-    }
-  };
+  window.addEventListener('scroll', rafThrottle(updateScrollPositions), { passive: true });
+  window.addEventListener('resize', debounce(updateScrollPositions, 100), { passive: true });
 
-  window.addEventListener('scroll', onScrollThrottled, { passive: true });
-  window.addEventListener('resize', onScrollThrottled, { passive: true });
-
-  // Floating Drag Logic (Desktop Only)
+  // Floating Custom Drag Scroll Logic (Desktop Only)
   if (floatingTrack && floatingThumb && !isTouchDevice) {
     const startDrag = (e) => {
       isDraggingThumb = true;
@@ -376,37 +398,49 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('pointerup', stopDrag, { passive: true });
   }
 
+  // Very Subtle Light Parallax Effect for Background Shapes & Hero Elements
+  function handleSubtleParallax(scrollY) {
+    if (isTouchDevice || prefersReducedMotion) return;
+    const heroContent = document.querySelector('.hero-content');
+    const heroVideos = document.querySelector('.hero-videos');
+    const shapes = document.querySelectorAll('.hero-bg-shapes .shape');
+
+    if (scrollY < window.innerHeight) {
+      const scrollFactor = scrollY * 0.15;
+      if (heroContent) heroContent.style.transform = `translate3d(0, ${scrollFactor * 0.4}px, 0)`;
+      if (heroVideos) heroVideos.style.transform = `translate3d(0, ${scrollFactor * 0.6}px, 0)`;
+      shapes.forEach((shape, idx) => {
+        const speed = (idx + 1) * 0.2;
+        shape.style.transform = `translate3d(0, ${scrollFactor * speed}px, 0)`;
+      });
+    }
+  }
+
   /* ==========================================================================
-     6. Custom Cursor & Mouse Glow Tracking (Desktop Only, Bypassed on Mobile)
+     6. Custom Cursor & Mouse Reactive Glow (Desktop Pointer Only)
      ========================================================================== */
 
-  let mouseX = 0, mouseY = 0;
-  let ringX = 0, ringY = 0;
-  let isTickingMouse = false;
+  let mouseX = -100, mouseY = -100;
+  let ringX = -100, ringY = -100;
 
-  if (!isTouchDevice) {
+  if (!isTouchDevice && !prefersReducedMotion) {
     window.addEventListener('mousemove', (e) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
 
-      if (!isTickingMouse) {
-        requestAnimationFrame(() => {
-          if (cursorDot) {
-            cursorDot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
-          }
-          if (mouseGlow) {
-            mouseGlow.style.setProperty('--mouse-x', `${mouseX}px`);
-            mouseGlow.style.setProperty('--mouse-y', `${mouseY}px`);
-          }
-          isTickingMouse = false;
-        });
-        isTickingMouse = true;
+      if (cursorDot) {
+        cursorDot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
+      }
+
+      if (mouseGlow) {
+        mouseGlow.style.setProperty('--mouse-x', `${mouseX}px`);
+        mouseGlow.style.setProperty('--mouse-y', `${mouseY}px`);
       }
     }, { passive: true });
 
     function animateCursorRing() {
-      ringX += (mouseX - ringX) * 0.15;
-      ringY += (mouseY - ringY) * 0.15;
+      ringX += (mouseX - ringX) * 0.18;
+      ringY += (mouseY - ringY) * 0.18;
 
       if (cursorRing) {
         cursorRing.style.transform = `translate3d(${ringX}px, ${ringY}px, 0)`;
@@ -419,7 +453,7 @@ document.addEventListener('DOMContentLoaded', () => {
       animateCursorRing();
     }
 
-    // Hover Scale Effects for Interactive Elements
+    // Hover Scale & Interactive Cues for Interactive Elements
     const interactiveSelector = 'a, button, .service-card, .portfolio-card, .video-embed-card, .poster-card, .pricing-card, .interactive-card, .team-card, .why-choose-card, .terms-card, .website-card, .floating-card';
     document.querySelectorAll(interactiveSelector).forEach(el => {
       el.addEventListener('mouseenter', () => {
@@ -432,11 +466,57 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================================
-     7. Navigation & Active Nav Link Highlighting & Mobile Overlay Menu
+     7. Premium Desktop Interactive Enhancements (3D Card Tilt & Magnetic Buttons)
+     ========================================================================== */
+
+  if (!isTouchDevice && !prefersReducedMotion) {
+    // 3D Card Tilt Micro-Interactions
+    const tiltCards = document.querySelectorAll('.service-card, .website-card, .pricing-card, .team-card, .why-choose-card');
+
+    tiltCards.forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+
+        const rotateX = ((y - centerY) / centerY) * -5; // max 5deg tilt
+        const rotateY = ((x - centerX) / centerX) * 5;
+
+        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+      });
+    });
+
+    // Magnetic Button Physics
+    const magneticBtns = document.querySelectorAll('.btn-primary, .btn-secondary, .pricing-action-btn');
+
+    magneticBtns.forEach(btn => {
+      btn.addEventListener('mousemove', (e) => {
+        const rect = btn.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+
+        btn.style.transform = `translate3d(${x * 0.2}px, ${y * 0.2}px, 0)`;
+      });
+
+      btn.addEventListener('mouseleave', () => {
+        btn.style.transform = '';
+      });
+    });
+  }
+
+  /* ==========================================================================
+     8. Navigation, Section Highlight Observer & Mobile Drawer
      ========================================================================== */
 
   function updateActiveNavLink(currentScrollY) {
-    const scrollPos = (currentScrollY || window.scrollY) + 120;
+    const scrollPos = (currentScrollY || window.scrollY) + 140;
 
     sections.forEach(section => {
       const top = section.offsetTop;
@@ -492,7 +572,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================================
-     8. Theme Switching (Dark / Light Mode)
+     9. Theme Controller (Dark / Light Mode)
      ========================================================================== */
 
   const savedTheme = safeStorageGet('crazex-theme');
@@ -518,34 +598,30 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================================
-     9. Particles Canvas Engine (Mobile Performance Scaled)
+     10. Particles Canvas Engine (Performance Scaled)
      ========================================================================== */
 
   const canvas = document.getElementById('particles');
-  if (canvas) {
+  if (canvas && !prefersReducedMotion) {
     const ctx = canvas.getContext('2d');
     let particlesArray = [];
     let width = canvas.width = window.innerWidth;
     let height = canvas.height = window.innerHeight;
 
-    let resizeTimeout;
-    window.addEventListener('resize', () => {
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(() => {
-        width = canvas.width = window.innerWidth;
-        height = canvas.height = window.innerHeight;
-        initParticles();
-      }, 150);
-    }, { passive: true });
+    window.addEventListener('resize', debounce(() => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+      initParticles();
+    }, 150), { passive: true });
 
     class Particle {
       constructor() {
         this.x = Math.random() * width;
         this.y = Math.random() * height;
         this.size = Math.random() * 2 + 0.5;
-        this.speedX = (Math.random() - 0.5) * 0.4;
-        this.speedY = (Math.random() - 0.5) * 0.4;
-        this.opacity = Math.random() * 0.5 + 0.2;
+        this.speedX = (Math.random() - 0.5) * 0.35;
+        this.speedY = (Math.random() - 0.5) * 0.35;
+        this.opacity = Math.random() * 0.4 + 0.15;
       }
 
       update() {
@@ -559,7 +635,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       draw() {
-        ctx.fillStyle = `rgba(167, 139, 250, ${this.opacity})`;
+        ctx.fillStyle = `rgba(239, 68, 68, ${this.opacity})`;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill();
@@ -568,8 +644,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function initParticles() {
       particlesArray = [];
-      const densityDivisor = width <= 576 ? 32 : 18;
-      const maxCount = width <= 576 ? 20 : 70;
+      const densityDivisor = width <= 576 ? 36 : 20;
+      const maxCount = width <= 576 ? 18 : 60;
       const particleCount = Math.min(Math.floor(width / densityDivisor), maxCount);
 
       for (let i = 0; i < particleCount; i++) {
@@ -591,7 +667,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================================
-     10. Stat Counters Animation
+     11. Eased Stat Counter Engine
      ========================================================================== */
 
   const statNumbers = document.querySelectorAll('.stat-number');
@@ -606,21 +682,26 @@ document.addEventListener('DOMContentLoaded', () => {
             const target = parseInt(stat.getAttribute('data-count'), 10);
             if (isNaN(target)) return;
 
-            let current = 0;
-            const duration = 1800;
-            const stepTime = 30;
-            const steps = duration / stepTime;
-            const increment = target / steps;
+            let startTime = null;
+            const duration = 2000; // ms
 
-            const timer = setInterval(() => {
-              current += increment;
-              if (current >= target) {
-                stat.textContent = target;
-                clearInterval(timer);
+            function animateCount(timestamp) {
+              if (!startTime) startTime = timestamp;
+              const progress = Math.min((timestamp - startTime) / duration, 1);
+              // Ease-out quad formula
+              const easeProgress = 1 - (1 - progress) * (1 - progress);
+              const currentVal = Math.floor(easeProgress * target);
+
+              stat.textContent = currentVal;
+
+              if (progress < 1) {
+                requestAnimationFrame(animateCount);
               } else {
-                stat.textContent = Math.floor(current);
+                stat.textContent = target;
               }
-            }, stepTime);
+            }
+
+            requestAnimationFrame(animateCount);
           });
         }
       });
@@ -633,7 +714,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================================
-     11. Service Details Modal & Dynamic WhatsApp Inquire
+     12. Service Details Modal & Dynamic WhatsApp Inquire
      ========================================================================== */
 
   const servicesDetailModal = document.getElementById('servicesDetailModal');
@@ -689,7 +770,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ==========================================================================
-     12. Graphics Design Showcase Slider (Buttons & Touch Drag/Swipe)
+     13. Graphics Design Slider (Enhanced Touch Gestures)
      ========================================================================== */
 
   const graphicsSlider = document.getElementById('graphicsSlider');
@@ -711,7 +792,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Touch Swipe Gesture Handling for Mobile
+    // Smooth Touch Dragging on Mobile
     let startX = 0;
     let scrollLeftPos = 0;
     let isDown = false;
@@ -725,7 +806,7 @@ document.addEventListener('DOMContentLoaded', () => {
     graphicsSlider.addEventListener('touchmove', (e) => {
       if (!isDown) return;
       const x = e.touches[0].pageX - graphicsSlider.offsetLeft;
-      const walk = (x - startX) * 1.2;
+      const walk = (x - startX) * 1.3;
       graphicsSlider.scrollLeft = scrollLeftPos - walk;
     }, { passive: true });
 
@@ -735,7 +816,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================================
-     13. Website Design Showcase Modal Popup Logic
+     14. Website Design Showcase Modal Popup
      ========================================================================== */
 
   const websiteModal = document.getElementById('websiteModal');
@@ -828,7 +909,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ==========================================================================
-     14. Essential Services Live Calculator & Business Category
+     15. Essential Services Live Calculator Engine
      ========================================================================== */
 
   const categorySelect = document.getElementById('business-category');
@@ -923,7 +1004,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ==========================================================================
-     15. UPGRADED PRICING PACKAGE TOGGLE & WHATSAPP BOOKING INTEGRATION
+     16. Upgraded Pricing Package Controller & WhatsApp Integrations
      ========================================================================== */
 
   const toggleBtn = document.getElementById('pBillingToggle') || document.querySelector('.pricing-toggle .toggle-switch');
@@ -951,7 +1032,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const savesText = isYearly ? card.dataset.yearlySaves : card.dataset.monthlySaves;
         const breakdownText = isYearly ? card.dataset.yearlyBreakdown : card.dataset.monthlyBreakdown;
 
-        // DOM elements update with fallback selectors
         const largePriceEl = card.querySelector('.large-price, .current-price, .amount');
         const priceCycleEl = card.querySelector('.price-cycle, .price-period, .period');
         const strikethroughPriceEl = card.querySelector('.strikethrough-price, .regular-price');
@@ -972,7 +1052,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 150);
     });
 
-    // Update Toggle Button & Label States
     if (toggleBtn) {
       if (isYearly) {
         toggleBtn.classList.add('active', 'yearly');
@@ -1008,7 +1087,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Attach WhatsApp booking handlers to all Pricing Plan buttons
   pricingSectionCards.forEach(card => {
     const planBtn = card.querySelector('.btn-plan-wa, .pricing-action-btn');
 
@@ -1035,7 +1113,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ==========================================================================
-     16. General WhatsApp CTA Buttons & Contact Form Handler
+     17. Contact Form Handler & General WhatsApp CTAs
      ========================================================================== */
 
   const waButtons = document.querySelectorAll('.btn-wa');
@@ -1142,21 +1220,29 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================================
-     17. Generic Modal Utilities & Keyboard Accessibility
+     18. Accessible Modal Utilities & Keyboard Focus Management
      ========================================================================== */
 
   function openModal(modal) {
     if (!modal) return;
+    lastFocusedElement = document.activeElement;
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
-    const focusable = modal.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-    if (focusable) focusable.focus();
+
+    const focusable = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+    if (focusable.length > 0) {
+      focusable[0].focus();
+    }
   }
 
   function closeModal(modal) {
     if (!modal) return;
     modal.classList.remove('active');
     document.body.style.overflow = '';
+
+    if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') {
+      lastFocusedElement.focus();
+    }
   }
 
   document.querySelectorAll('.custom-modal').forEach(modal => {
@@ -1184,7 +1270,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ==========================================================================
-     18. Scroll Reveal Observer
+     19. Intersection Observer Scroll Reveal & Media Lazy Loading
      ========================================================================== */
 
   const revealElements = document.querySelectorAll(`
@@ -1211,8 +1297,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
     }, {
-      threshold: 0.1,
-      rootMargin: '0px 0px -40px 0px'
+      threshold: 0.08,
+      rootMargin: '0px 0px -20px 0px'
     });
 
     revealElements.forEach(el => {
