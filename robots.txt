@@ -3,7 +3,7 @@ Allow: /
 Disallow: /admin/
 Disallow: /private/
 
-Sitemap: https://crazexstudiobd.com/sitemap.xml
+Sitemap: https://www.crazexstudiobd.com/sitemap.xml
 
 User-agent: Googlebot
 Allow: /
