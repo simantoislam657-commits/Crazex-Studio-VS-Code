@@ -908,100 +908,1345 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  /* ==========================================================================
-     15. Essential Services Live Calculator Engine
-     ========================================================================== */
+ /* ==========================================================================
+   CRAZEX STUDIO — ESSENTIAL SERVICES
+   CUSTOM PACKAGE BUILDER ENGINE
+   ========================================================================== */
 
-  const categorySelect = document.getElementById('business-category');
-  const essentialCards = document.querySelectorAll('#essential-services .interactive-card');
-  const essentialTotalEl = document.getElementById('essential-total');
-  const bookEssentialBtn = document.getElementById('book-essential-btn');
-  const summaryCategoryVal = document.getElementById('summary-category-val');
-  const summaryItemsList = document.getElementById('summary-items-list');
+(() => {
+  "use strict";
 
-  function calculateEssentialTotal() {
-    let total = 0;
-    const selectedItems = [];
-    let summaryHtml = '';
+  /* ------------------------------------------------------------------------
+     DISCOUNT CONFIGURATION
+     ------------------------------------------------------------------------ */
 
-    const selectedCategory = categorySelect ? categorySelect.value : '';
-    if (summaryCategoryVal) {
-      summaryCategoryVal.textContent = selectedCategory || 'None Selected';
+  const DISCOUNT_TIERS = [
+    {
+      min: 2500,
+      max: 4589,
+      rate: 0.07,
+      label: "7% OFF"
+    },
+    {
+      min: 4590,
+      max: 7000,
+      rate: 0.15,
+      label: "15% OFF"
+    },
+    {
+      min: 7001,
+      max: 12989,
+      rate: 0.16,
+      label: "16% OFF"
+    },
+    {
+      min: 12990,
+      max: 20989,
+      rate: 0.17,
+      label: "17% OFF"
+    },
+    {
+      min: 20990,
+      max: 30000,
+      rate: 0.18,
+      label: "18% OFF"
+    }
+  ];
+
+
+  /* ------------------------------------------------------------------------
+     DIGITAL MARKETING CONFIGURATION
+
+     IMPORTANT:
+     No USD -> BDT exchange rate is invented here.
+
+     Digital Marketing:
+     Minimum = $10
+     Increment = $10
+     ------------------------------------------------------------------------ */
+
+  const DIGITAL_MARKETING_MIN = 10;
+  const DIGITAL_MARKETING_STEP = 10;
+
+
+  /* ------------------------------------------------------------------------
+     DOM ELEMENTS
+     ------------------------------------------------------------------------ */
+
+  const section = document.getElementById("essential-services");
+
+  if (!section) {
+    return;
+  }
+
+  const categorySelect =
+    section.querySelector("#business-category");
+
+  const serviceCards =
+    Array.from(
+      section.querySelectorAll(
+        ".interactive-card:not(.digital-marketing-card)"
+      )
+    );
+
+  const digitalMarketingCard =
+    section.querySelector(".digital-marketing-card");
+
+  const essentialSubtotalEl =
+    section.querySelector("#essential-subtotal");
+
+  const essentialTotalEl =
+    section.querySelector("#essential-total");
+
+  const essentialDiscountRow =
+    section.querySelector("#essential-discount-row");
+
+  const essentialDiscountLabel =
+    section.querySelector("#essential-discount-label");
+
+  const essentialDiscountEl =
+    section.querySelector("#essential-discount");
+
+  const essentialSavingsRow =
+    section.querySelector("#essential-savings-row");
+
+  const essentialSavingsEl =
+    section.querySelector("#essential-savings");
+
+  const digitalSummaryRow =
+    section.querySelector("#digital-summary-row");
+
+  const digitalSummaryTotal =
+    section.querySelector("#digital-summary-total");
+
+  const summaryCategoryVal =
+    section.querySelector("#summary-category-val");
+
+  const summaryItemsList =
+    section.querySelector("#summary-items-list");
+
+  const summaryServiceCount =
+    section.querySelector("#summary-service-count");
+
+  const summaryNextDiscount =
+    section.querySelector("#summary-next-discount");
+
+  const nextDiscountText =
+    section.querySelector("#next-discount-text");
+
+  const nextDiscountProgressBar =
+    section.querySelector("#next-discount-progress-bar");
+
+  const discountProgressMessage =
+    section.querySelector("#discount-progress-message");
+
+  const discountTierElements =
+    Array.from(
+      section.querySelectorAll(".discount-tier")
+    );
+
+  const bookEssentialBtn =
+    section.querySelector("#book-essential-btn");
+
+  const digitalAmountEl =
+    section.querySelector(".digital-marketing-amount");
+
+  const digitalPlusBtn =
+    section.querySelector(".digital-plus");
+
+  const digitalMinusBtn =
+    section.querySelector(".digital-minus");
+
+
+  /* ------------------------------------------------------------------------
+     STATE
+     ------------------------------------------------------------------------ */
+
+  let digitalMarketingAmount = 0;
+
+
+  /* ------------------------------------------------------------------------
+     HELPERS
+     ------------------------------------------------------------------------ */
+
+  function formatBDT(value) {
+    const safeValue = Number.isFinite(value) ? value : 0;
+
+    return `৳${Math.round(safeValue).toLocaleString("en-US")}`;
+  }
+
+
+  function formatUSD(value) {
+    const safeValue = Number.isFinite(value) ? value : 0;
+
+    return `$${Math.round(safeValue).toLocaleString("en-US")}`;
+  }
+
+
+  function getServiceName(card) {
+    const dataName = card.getAttribute("data-name");
+
+    if (dataName) {
+      return dataName.trim();
     }
 
-    essentialCards.forEach(card => {
-      const price = parseInt(card.getAttribute('data-price'), 10) || 0;
-      const h3El = card.querySelector('h3');
-      const name = card.getAttribute('data-name') || (h3El ? h3El.textContent.trim() : '');
-      const countEl = card.querySelector('.qty-count');
-      const count = parseInt(countEl ? countEl.textContent : '0', 10) || 0;
+    const heading = card.querySelector("h3");
 
-      if (count > 0) {
-        const itemTotal = price * count;
-        total += itemTotal;
-        selectedItems.push(`${name} (Qty: ${count}, Rate: ৳${price}) = ৳${itemTotal.toLocaleString()}`);
+    return heading
+      ? heading.textContent.trim()
+      : "Service";
+  }
 
-        summaryHtml += `
-          <div class="summary-item-row">
-            <span class="item-name-qty">• ${name} (${count}x @ ৳${price})</span>
-            <span class="item-price-calc">৳${itemTotal.toLocaleString()}</span>
-          </div>
-        `;
+
+  function getServicePrice(card) {
+    const price = Number(card.getAttribute("data-price"));
+
+    return Number.isFinite(price) && price >= 0
+      ? price
+      : 0;
+  }
+
+
+  function getQuantity(card) {
+    const countEl = card.querySelector(".qty-count");
+
+    if (!countEl) {
+      return 0;
+    }
+
+    const quantity = parseInt(
+      countEl.textContent,
+      10
+    );
+
+    return Number.isFinite(quantity) && quantity > 0
+      ? quantity
+      : 0;
+  }
+
+
+  function setQuantity(card, quantity) {
+    const countEl = card.querySelector(".qty-count");
+
+    const minusBtn =
+      card.querySelector(".qty-btn.minus");
+
+    if (!countEl) {
+      return;
+    }
+
+    const safeQuantity =
+      Math.max(0, parseInt(quantity, 10) || 0);
+
+    countEl.textContent = safeQuantity;
+
+    if (minusBtn) {
+      minusBtn.disabled = safeQuantity === 0;
+    }
+
+    card.classList.toggle(
+      "is-selected",
+      safeQuantity > 0
+    );
+  }
+
+
+  /* ------------------------------------------------------------------------
+     DIGITAL MARKETING
+     ------------------------------------------------------------------------ */
+
+  function updateDigitalMarketingUI() {
+
+    if (!digitalAmountEl) {
+      return;
+    }
+
+    digitalAmountEl.textContent =
+      digitalMarketingAmount > 0
+        ? formatUSD(digitalMarketingAmount)
+        : "$0";
+
+    if (digitalMinusBtn) {
+      digitalMinusBtn.disabled =
+        digitalMarketingAmount <= 0;
+    }
+
+    if (digitalMarketingCard) {
+      digitalMarketingCard.classList.toggle(
+        "is-selected",
+        digitalMarketingAmount > 0
+      );
+    }
+
+    if (digitalSummaryRow) {
+      digitalSummaryRow.hidden =
+        digitalMarketingAmount <= 0;
+    }
+
+    if (digitalSummaryTotal) {
+      digitalSummaryTotal.textContent =
+        formatUSD(digitalMarketingAmount);
+    }
+  }
+
+
+  function increaseDigitalMarketing() {
+
+    if (digitalMarketingAmount === 0) {
+      digitalMarketingAmount =
+        DIGITAL_MARKETING_MIN;
+    } else {
+      digitalMarketingAmount +=
+        DIGITAL_MARKETING_STEP;
+    }
+
+    updateDigitalMarketingUI();
+    calculateEssentialPackage();
+  }
+
+
+  function decreaseDigitalMarketing() {
+
+    if (digitalMarketingAmount <= 0) {
+      return;
+    }
+
+    digitalMarketingAmount -=
+      DIGITAL_MARKETING_STEP;
+
+    if (digitalMarketingAmount < DIGITAL_MARKETING_MIN) {
+      digitalMarketingAmount = 0;
+    }
+
+    updateDigitalMarketingUI();
+    calculateEssentialPackage();
+  }
+
+
+  /* ------------------------------------------------------------------------
+     GET SELECTED BDT SERVICES
+     ------------------------------------------------------------------------ */
+
+  function getSelectedBDTServices() {
+
+    const selected = [];
+
+    serviceCards.forEach(card => {
+
+      const quantity =
+        getQuantity(card);
+
+      if (quantity <= 0) {
+        return;
       }
+
+      const unitPrice =
+        getServicePrice(card);
+
+      const name =
+        getServiceName(card);
+
+      const subtotal =
+        unitPrice * quantity;
+
+      selected.push({
+        name,
+        quantity,
+        unitPrice,
+        subtotal
+      });
+
     });
 
-    if (summaryItemsList) {
-      summaryItemsList.innerHTML = summaryHtml || '<p style="color: var(--text-muted); font-size: 0.9rem;">No services selected yet.</p>';
+    return selected;
+  }
+
+
+  /* ------------------------------------------------------------------------
+     BDT SUBTOTAL
+     ------------------------------------------------------------------------ */
+
+  function calculateBDTSubtotal(selectedServices) {
+
+    return selectedServices.reduce(
+      (total, service) => {
+        return total + service.subtotal;
+      },
+      0
+    );
+  }
+
+
+  /* ------------------------------------------------------------------------
+     DISCOUNT ENGINE
+     ------------------------------------------------------------------------ */
+
+  function getActiveDiscountTier(subtotal) {
+
+    if (!Number.isFinite(subtotal)) {
+      return null;
+    }
+
+    /*
+      For values above ৳30,000:
+      preserve highest configured tier = 18%.
+    */
+
+    if (subtotal > 30000) {
+      return DISCOUNT_TIERS[
+        DISCOUNT_TIERS.length - 1
+      ];
+    }
+
+    /*
+      Find the exact qualifying tier.
+    */
+
+    for (let i = 0; i < DISCOUNT_TIERS.length; i++) {
+
+      const tier =
+        DISCOUNT_TIERS[i];
+
+      if (
+        subtotal >= tier.min &&
+        subtotal <= tier.max
+      ) {
+        return tier;
+      }
+    }
+
+    return null;
+  }
+
+
+  function calculateDiscount(subtotal) {
+
+    const activeTier =
+      getActiveDiscountTier(subtotal);
+
+    if (!activeTier) {
+      return {
+        tier: null,
+        amount: 0,
+        finalTotal: subtotal
+      };
+    }
+
+    const discountAmount =
+      subtotal * activeTier.rate;
+
+    const finalTotal =
+      subtotal - discountAmount;
+
+    return {
+      tier: activeTier,
+      amount: discountAmount,
+      finalTotal
+    };
+  }
+
+
+  /* ------------------------------------------------------------------------
+     DISCOUNT ROADMAP
+     ------------------------------------------------------------------------ */
+
+  function updateDiscountTierUI(subtotal) {
+
+    discountTierElements.forEach(
+      (element, index) => {
+
+        const tier =
+          DISCOUNT_TIERS[index];
+
+        if (!tier) {
+          return;
+        }
+
+        const unlocked =
+          subtotal >= tier.min;
+
+        const activeTier =
+          getActiveDiscountTier(subtotal);
+
+        const isActive =
+          activeTier === tier;
+
+        const status =
+          element.querySelector(
+            ".discount-tier-status"
+          );
+
+        element.classList.toggle(
+          "locked",
+          !unlocked
+        );
+
+        element.classList.toggle(
+          "unlocked",
+          unlocked
+        );
+
+        element.classList.toggle(
+          "active",
+          isActive
+        );
+
+        if (status) {
+
+          if (isActive) {
+            status.textContent = "ACTIVE";
+          } else if (unlocked) {
+            status.textContent = "UNLOCKED";
+          } else {
+            status.textContent = "LOCKED";
+          }
+
+        }
+
+      }
+    );
+  }
+
+
+  /* ------------------------------------------------------------------------
+     NEXT DISCOUNT PROGRESS
+     ------------------------------------------------------------------------ */
+
+  function updateNextDiscountProgress(subtotal) {
+
+    if (
+      !summaryNextDiscount ||
+      !nextDiscountText ||
+      !nextDiscountProgressBar
+    ) {
+      return;
+    }
+
+    /*
+      No package.
+    */
+
+    if (subtotal <= 0) {
+
+      summaryNextDiscount.hidden = true;
+
+      if (discountProgressMessage) {
+        discountProgressMessage.textContent =
+          "Start building your package to unlock discounts.";
+      }
+
+      return;
+    }
+
+    /*
+      Find next threshold above current subtotal.
+    */
+
+    const nextTier =
+      DISCOUNT_TIERS.find(
+        tier => subtotal < tier.min
+      );
+
+    const activeTier =
+      getActiveDiscountTier(subtotal);
+
+    /*
+      No next tier.
+    */
+
+    if (!nextTier) {
+
+      summaryNextDiscount.hidden = false;
+
+      nextDiscountText.textContent =
+        "Maximum discount unlocked";
+
+      nextDiscountProgressBar.style.width =
+        "100%";
+
+      if (discountProgressMessage) {
+        discountProgressMessage.textContent =
+          activeTier
+            ? `${activeTier.label} UNLOCKED`
+            : "Maximum discount unlocked";
+      }
+
+      return;
+    }
+
+    const amountRemaining =
+      Math.max(
+        0,
+        nextTier.min - subtotal
+      );
+
+    let previousThreshold = 0;
+
+    const currentIndex =
+      DISCOUNT_TIERS.indexOf(nextTier);
+
+    if (currentIndex > 0) {
+      previousThreshold =
+        DISCOUNT_TIERS[
+          currentIndex - 1
+        ].min;
+    }
+
+    const range =
+      nextTier.min - previousThreshold;
+
+    const progress =
+      range > 0
+        ? ((subtotal - previousThreshold) / range) * 100
+        : 0;
+
+    const safeProgress =
+      Math.max(
+        0,
+        Math.min(100, progress)
+      );
+
+    summaryNextDiscount.hidden = false;
+
+    nextDiscountText.textContent =
+      `Add ${formatBDT(amountRemaining)} more to unlock ${nextTier.label}`;
+
+    nextDiscountProgressBar.style.width =
+      `${safeProgress}%`;
+
+    if (discountProgressMessage) {
+
+      if (activeTier) {
+
+        discountProgressMessage.textContent =
+          `${activeTier.label} UNLOCKED • Add ${formatBDT(amountRemaining)} more to unlock ${nextTier.label}`;
+
+      } else {
+
+        discountProgressMessage.textContent =
+          `Add ${formatBDT(amountRemaining)} more to unlock ${nextTier.label}`;
+
+      }
+
+    }
+  }
+
+
+  /* ------------------------------------------------------------------------
+     SUMMARY RENDERING
+     ------------------------------------------------------------------------ */
+
+  function renderSelectedServices(
+    selectedServices
+  ) {
+
+    if (!summaryItemsList) {
+      return;
+    }
+
+    const hasBDTServices =
+      selectedServices.length > 0;
+
+    const hasDigitalMarketing =
+      digitalMarketingAmount > 0;
+
+    if (
+      !hasBDTServices &&
+      !hasDigitalMarketing
+    ) {
+
+      summaryItemsList.innerHTML = `
+        <div class="summary-empty-state">
+          <span class="empty-state-icon">+</span>
+          <p>No services selected yet.</p>
+          <small>
+            Start building your custom package above.
+          </small>
+        </div>
+      `;
+
+      return;
+    }
+
+    const fragment =
+      document.createDocumentFragment();
+
+
+    selectedServices.forEach(service => {
+
+      const row =
+        document.createElement("div");
+
+      row.className =
+        "summary-item-row";
+
+      const name =
+        document.createElement("span");
+
+      name.className =
+        "item-name-qty";
+
+      name.textContent =
+        `${service.name} × ${service.quantity}`;
+
+      const price =
+        document.createElement("span");
+
+      price.className =
+        "item-price-calc";
+
+      price.textContent =
+        formatBDT(service.subtotal);
+
+      row.appendChild(name);
+      row.appendChild(price);
+
+      fragment.appendChild(row);
+
+    });
+
+
+    if (hasDigitalMarketing) {
+
+      const row =
+        document.createElement("div");
+
+      row.className =
+        "summary-item-row";
+
+      const name =
+        document.createElement("span");
+
+      name.className =
+        "item-name-qty";
+
+      name.textContent =
+        "Digital Marketing";
+
+      const price =
+        document.createElement("span");
+
+      price.className =
+        "item-price-calc";
+
+      price.textContent =
+        formatUSD(digitalMarketingAmount);
+
+      row.appendChild(name);
+      row.appendChild(price);
+
+      fragment.appendChild(row);
+    }
+
+
+    summaryItemsList.innerHTML = "";
+    summaryItemsList.appendChild(fragment);
+  }
+
+
+  /* ------------------------------------------------------------------------
+     SUMMARY SERVICE COUNT
+     ------------------------------------------------------------------------ */
+
+  function updateServiceCount(
+    selectedServices
+  ) {
+
+    if (!summaryServiceCount) {
+      return;
+    }
+
+    const bdtQuantity =
+      selectedServices.reduce(
+        (total, item) =>
+          total + item.quantity,
+        0
+      );
+
+    const digitalSelected =
+      digitalMarketingAmount > 0
+        ? 1
+        : 0;
+
+    const count =
+      bdtQuantity + digitalSelected;
+
+    summaryServiceCount.textContent =
+      `${count} ${count === 1 ? "service" : "services"}`;
+  }
+
+
+  /* ------------------------------------------------------------------------
+     PRICE SUMMARY
+     ------------------------------------------------------------------------ */
+
+  function updatePricingSummary(
+    subtotal,
+    discountData
+  ) {
+
+    if (essentialSubtotalEl) {
+      essentialSubtotalEl.textContent =
+        formatBDT(subtotal);
+    }
+
+    if (discountData.tier) {
+
+      if (essentialDiscountRow) {
+        essentialDiscountRow.hidden = false;
+      }
+
+      if (essentialDiscountLabel) {
+        essentialDiscountLabel.textContent =
+          `${discountData.tier.label} Discount`;
+      }
+
+      if (essentialDiscountEl) {
+        essentialDiscountEl.textContent =
+          `−${formatBDT(discountData.amount)}`;
+      }
+
+      if (essentialSavingsRow) {
+        essentialSavingsRow.hidden = false;
+      }
+
+      if (essentialSavingsEl) {
+        essentialSavingsEl.textContent =
+          formatBDT(discountData.amount);
+      }
+
+    } else {
+
+      if (essentialDiscountRow) {
+        essentialDiscountRow.hidden = true;
+      }
+
+      if (essentialSavingsRow) {
+        essentialSavingsRow.hidden = true;
+      }
+
     }
 
     if (essentialTotalEl) {
-      essentialTotalEl.textContent = total.toLocaleString();
-    }
-
-    if (bookEssentialBtn) {
-      if (total > 0) {
-        bookEssentialBtn.removeAttribute('disabled');
-        bookEssentialBtn.onclick = () => {
-          const categoryText = selectedCategory ? selectedCategory : 'Not Specified';
-          const message = `Hello Crazex Studio!\n\nI want to book the following Essential Services:\n• Business Category: ${categoryText}\n\nSelected Services:\n• ${selectedItems.join('\n• ')}\n\nSubtotal / Grand Total: ৳${total.toLocaleString()}`;
-          openWhatsApp(message);
-        };
-      } else {
-        bookEssentialBtn.setAttribute('disabled', 'true');
-        bookEssentialBtn.onclick = null;
-      }
+      essentialTotalEl.textContent =
+        formatBDT(discountData.finalTotal);
     }
   }
+
+
+  /* ------------------------------------------------------------------------
+   BOOKING BUTTON
+   ------------------------------------------------------------------------ */
+
+function updateBookingButton(
+  selectedServices,
+  subtotal,
+  discountData
+) {
+
+  if (!bookEssentialBtn) {
+    return;
+  }
+
+  const hasServices =
+    selectedServices.length > 0 ||
+    digitalMarketingAmount > 0;
+
+  if (!hasServices) {
+
+    bookEssentialBtn.disabled = true;
+    bookEssentialBtn.onclick = null;
+
+    return;
+  }
+
+  bookEssentialBtn.disabled = false;
+
+  bookEssentialBtn.onclick = () => {
+
+    /* ------------------------------------------------------------
+       BUSINESS CATEGORY
+       ------------------------------------------------------------ */
+
+    const category =
+      categorySelect &&
+      categorySelect.value
+        ? categorySelect.value
+        : "Not Specified";
+
+
+    /* ------------------------------------------------------------
+       SELECTED SERVICES
+       ------------------------------------------------------------ */
+
+    const selectedLines =
+      selectedServices.map(service => {
+
+        const unitPrice = Number(service.price || 0);
+        const quantity = Number(service.quantity || 0);
+        const serviceTotal = Number(service.subtotal || 0);
+
+        return (
+          `• ${service.name}\n` +
+          `   Quantity: ${quantity}\n` +
+          `   Unit Price: ${formatBDT(unitPrice)}\n` +
+          `   Total: ${formatBDT(serviceTotal)}`
+        );
+
+      });
+
+
+    /* ------------------------------------------------------------
+       DIGITAL MARKETING
+       ------------------------------------------------------------ */
+
+    if (digitalMarketingAmount > 0) {
+
+      selectedLines.push(
+        `• Digital Marketing\n` +
+        `   Budget: ${formatUSD(digitalMarketingAmount)}`
+      );
+
+    }
+
+
+    /* ------------------------------------------------------------
+       DISCOUNT
+       ------------------------------------------------------------ */
+
+    const discountLine =
+      discountData && discountData.tier
+        ? `${discountData.tier.label}: −${formatBDT(
+            discountData.amount
+          )}`
+        : "No Discount";
+
+
+    /* ------------------------------------------------------------
+       FINAL WHATSAPP MESSAGE
+       ------------------------------------------------------------ */
+
+    const message = [
+
+      "Hello Crazex Studio 👋",
+
+      "",
+
+      "🔔 NEW SERVICE BOOKING",
+
+      "━━━━━━━━━━━━━━━━━━",
+
+      "",
+
+      `🏷️ Business Category: ${category}`,
+
+      "",
+
+      "📦 SELECTED SERVICES",
+
+      "━━━━━━━━━━━━━━━━━━",
+
+      selectedLines.join("\n\n"),
+
+      "",
+
+      "━━━━━━━━━━━━━━━━━━",
+
+      "💰 PRICE SUMMARY",
+
+      "━━━━━━━━━━━━━━━━━━",
+
+      "",
+
+      `BDT Subtotal: ${formatBDT(subtotal)}`,
+
+      `Discount: ${discountLine}`,
+
+      `You Save: ${formatBDT(
+        discountData ? discountData.amount : 0
+      )}`,
+
+      `Final BDT Total: ${formatBDT(
+        discountData
+          ? discountData.finalTotal
+          : subtotal
+      )}`,
+
+      digitalMarketingAmount > 0
+        ? `Digital Marketing Budget: ${formatUSD(
+            digitalMarketingAmount
+          )}`
+        : "",
+
+      "",
+
+      "━━━━━━━━━━━━━━━━━━",
+
+      "✅ BOOKING REQUEST",
+
+      "━━━━━━━━━━━━━━━━━━",
+
+      "",
+
+      "Please contact me regarding this booking.",
+
+      "",
+
+      "Crazex Studio"
+
+    ]
+      .filter(Boolean)
+      .join("\n");
+
+
+    /* ------------------------------------------------------------
+       OPEN WHATSAPP
+       ------------------------------------------------------------ */
+
+    const whatsappNumber = "8801968908404";
+
+    const whatsappURL =
+      "https://wa.me/" +
+      whatsappNumber +
+      "?text=" +
+      encodeURIComponent(message);
+
+
+    /*
+      Open WhatsApp
+    */
+
+    const whatsappWindow =
+      window.open(
+        whatsappURL,
+        "_blank"
+      );
+
+
+    /*
+      Fallback if browser blocks popup
+    */
+
+    if (!whatsappWindow) {
+      window.location.href = whatsappURL;
+    }
+
+  };
+}
+
+  /* ------------------------------------------------------------------------
+     MAIN CALCULATION
+     ------------------------------------------------------------------------ */
+
+  function calculateEssentialPackage() {
+
+    const selectedServices =
+      getSelectedBDTServices();
+
+    const subtotal =
+      calculateBDTSubtotal(
+        selectedServices
+      );
+
+    const discountData =
+      calculateDiscount(subtotal);
+
+
+    /*
+      Update category
+    */
+
+    const selectedCategory =
+      categorySelect
+        ? categorySelect.value
+        : "";
+
+    if (summaryCategoryVal) {
+      summaryCategoryVal.textContent =
+        selectedCategory ||
+        "None Selected";
+    }
+
+
+    /*
+      Update all service cards
+    */
+
+    serviceCards.forEach(card => {
+
+      const quantity =
+        getQuantity(card);
+
+      const minus =
+        card.querySelector(
+          ".qty-btn.minus"
+        );
+
+      if (minus) {
+        minus.disabled =
+          quantity <= 0;
+      }
+
+    });
+
+
+    /*
+      Render summary
+    */
+
+    renderSelectedServices(
+      selectedServices
+    );
+
+    updateServiceCount(
+      selectedServices
+    );
+
+
+    /*
+      Pricing
+    */
+
+    updatePricingSummary(
+      subtotal,
+      discountData
+    );
+
+
+    /*
+      Digital Marketing
+    */
+
+    updateDigitalMarketingUI();
+
+
+    /*
+      Discount UI
+    */
+
+    updateDiscountTierUI(
+      subtotal
+    );
+
+    updateNextDiscountProgress(
+      subtotal
+    );
+
+
+    /*
+      Booking
+    */
+
+    updateBookingButton(
+      selectedServices,
+      subtotal,
+      discountData
+    );
+  }
+
+
+  /* ------------------------------------------------------------------------
+     SERVICE CARD EVENTS
+     ------------------------------------------------------------------------ */
+
+  serviceCards.forEach(card => {
+
+    const plusBtn =
+      card.querySelector(
+        ".qty-btn.plus"
+      );
+
+    const minusBtn =
+      card.querySelector(
+        ".qty-btn.minus"
+      );
+
+    if (plusBtn) {
+
+      plusBtn.addEventListener(
+        "click",
+        event => {
+
+          event.preventDefault();
+          event.stopPropagation();
+
+          const current =
+            getQuantity(card);
+
+          setQuantity(
+            card,
+            current + 1
+          );
+
+          calculateEssentialPackage();
+        }
+      );
+
+    }
+
+
+    if (minusBtn) {
+
+      minusBtn.addEventListener(
+        "click",
+        event => {
+
+          event.preventDefault();
+          event.stopPropagation();
+
+          const current =
+            getQuantity(card);
+
+          if (current <= 0) {
+            return;
+          }
+
+          setQuantity(
+            card,
+            current - 1
+          );
+
+          calculateEssentialPackage();
+        }
+      );
+
+    }
+
+  });
+
+
+  /* ------------------------------------------------------------------------
+     DIGITAL MARKETING EVENTS
+     ------------------------------------------------------------------------ */
+
+  if (digitalPlusBtn) {
+
+    digitalPlusBtn.addEventListener(
+      "click",
+      event => {
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        increaseDigitalMarketing();
+      }
+    );
+
+  }
+
+
+  if (digitalMinusBtn) {
+
+    digitalMinusBtn.addEventListener(
+      "click",
+      event => {
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        decreaseDigitalMarketing();
+      }
+    );
+
+  }
+
+
+  /* ------------------------------------------------------------------------
+     BUSINESS CATEGORY
+     ------------------------------------------------------------------------ */
 
   if (categorySelect) {
-    categorySelect.addEventListener('change', calculateEssentialTotal);
+
+    categorySelect.addEventListener(
+      "change",
+      () => {
+
+        /*
+          Preserve existing GA4 tracking
+          if the global function exists.
+        */
+
+        if (
+          typeof window.trackGA4Event ===
+          "function"
+        ) {
+
+          window.trackGA4Event(
+            "business_category_select",
+            {
+              category:
+                categorySelect.value
+            }
+          );
+
+        }
+
+        calculateEssentialPackage();
+      }
+    );
+
   }
 
-  essentialCards.forEach(card => {
-    const plusBtn = card.querySelector('.qty-btn.plus');
-    const minusBtn = card.querySelector('.qty-btn.minus');
-    const countEl = card.querySelector('.qty-count');
 
-    if (plusBtn && countEl) {
-      plusBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        let current = parseInt(countEl.textContent, 10) || 0;
-        countEl.textContent = current + 1;
-        calculateEssentialTotal();
-      });
+  /* ------------------------------------------------------------------------
+     INITIALIZATION
+     ------------------------------------------------------------------------ */
+
+  serviceCards.forEach(
+    card => setQuantity(
+      card,
+      getQuantity(card)
+    )
+  );
+
+  digitalMarketingAmount = 0;
+
+  updateDigitalMarketingUI();
+
+  calculateEssentialPackage();
+
+
+  /* ------------------------------------------------------------------------
+     OPTIONAL DEBUG API
+     ------------------------------------------------------------------------
+
+     These are intentionally exposed only under a namespaced object.
+     Useful for testing the exact discount boundaries in the browser console.
+
+     Example:
+       CrazexEssential.testDiscount(2500)
+     ------------------------------------------------------------------------ */
+
+  window.CrazexEssential = {
+
+    getDiscountTier: getActiveDiscountTier,
+
+    calculateDiscount,
+
+    testDiscount(subtotal) {
+
+      const result =
+        calculateDiscount(
+          Number(subtotal)
+        );
+
+      return {
+        subtotal: Number(subtotal),
+        discount:
+          result.tier
+            ? result.tier.label
+            : "No Discount",
+        discountAmount:
+          result.amount,
+        finalTotal:
+          result.finalTotal
+      };
+
     }
 
-    if (minusBtn && countEl) {
-      minusBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        let current = parseInt(countEl.textContent, 10) || 0;
-        if (current > 0) {
-          countEl.textContent = current - 1;
-          calculateEssentialTotal();
-        }
-      });
-    }
-  });
+  };
+
+})();
 
   /* ==========================================================================
      16. Upgraded Pricing Package Controller & WhatsApp Integrations

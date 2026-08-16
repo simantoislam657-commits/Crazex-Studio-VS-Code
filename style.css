@@ -1272,15 +1272,21 @@ nav {
   background: var(--accent);
 }
 
-/* --------------------------------------------------------------------------
-   10. Essential Services Live Calculator
-   -------------------------------------------------------------------------- */
+/* ==========================================================================
+   CRAZEX STUDIO — ESSENTIAL SERVICES
+   CUSTOM PACKAGE BUILDER
+   ========================================================================== */
+
 .interactive-essential-section {
   padding: 6rem 5vw;
   background: var(--bg-secondary);
   position: relative;
   z-index: 2;
 }
+
+/* --------------------------------------------------------------------------
+   Business Category
+   -------------------------------------------------------------------------- */
 
 .business-category-wrapper {
   max-width: 480px;
@@ -1305,22 +1311,36 @@ nav {
   color: var(--text-primary);
   font-size: 0.95rem;
   cursor: pointer;
-  transition: border-color var(--transition-fast);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.business-category-select:hover {
+  border-color: var(--border-hover);
 }
 
 .business-category-select:focus {
+  outline: none;
   border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.12);
 }
+
+
+/* --------------------------------------------------------------------------
+   Services Grid
+   -------------------------------------------------------------------------- */
 
 .interactive-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 1.2rem;
   max-width: 1320px;
-  margin: 0 auto 3rem;
+  margin: 0 auto 2.5rem;
 }
 
 .service-price-card {
+  position: relative;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -1328,12 +1348,23 @@ nav {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  transition: border-color var(--transition-fast), transform var(--transition-fast);
+  min-height: 205px;
+  transition:
+    border-color var(--transition-fast),
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
 .service-price-card:hover {
   border-color: var(--border-hover);
   transform: translateY(-3px);
+}
+
+.service-price-card.is-selected {
+  border-color: var(--accent);
+  box-shadow:
+    0 0 0 1px rgba(200, 16, 46, 0.25),
+    0 10px 30px rgba(0, 0, 0, 0.18);
 }
 
 .service-price-card h3 {
@@ -1356,10 +1387,67 @@ nav {
   margin-bottom: 1.2rem;
 }
 
+.service-icon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-light);
+  background: rgba(200, 16, 46, 0.07);
+  border: 1px solid rgba(200, 16, 46, 0.22);
+  border-radius: 8px;
+}
+
+.digital-marketing-card {
+  border-color: rgba(200, 16, 46, 0.38);
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(200, 16, 46, 0.12),
+      transparent 40%
+    ),
+    var(--bg-card);
+}
+
+.digital-marketing-card:hover {
+  border-color: var(--accent);
+}
+
+.digital-marketing-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 0.55rem;
+  letter-spacing: 0.08em;
+  font-weight: 800;
+  padding: 4px 7px;
+  border-radius: 999px;
+  color: var(--accent-light);
+  border: 1px solid rgba(200, 16, 46, 0.35);
+  background: rgba(200, 16, 46, 0.08);
+}
+
+.digital-price strong {
+  color: var(--accent-light);
+}
+
+.digital-marketing-note {
+  margin: -0.8rem 0 1rem;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+
+/* --------------------------------------------------------------------------
+   Quantity Controls
+   -------------------------------------------------------------------------- */
+
 .quantity-controls {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 0.6rem;
   background: var(--bg-primary);
   border: 1px solid var(--border);
   border-radius: var(--radius-xs);
@@ -1367,33 +1455,219 @@ nav {
 }
 
 .qty-btn {
-  width: 28px;
-  height: 28px;
+  width: 34px;
+  height: 34px;
+  border: 0;
   background: rgba(255, 255, 255, 0.05);
-  border-radius: 4px;
+  color: var(--text-primary);
+  border-radius: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.1rem;
   font-weight: 700;
   cursor: pointer;
-  transition: background var(--transition-fast);
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast),
+    transform var(--transition-fast),
+    opacity var(--transition-fast);
 }
 
-.qty-btn:hover {
+.qty-btn:hover:not(:disabled) {
   background: var(--accent);
   color: #ffffff;
 }
 
+.qty-btn:active:not(:disabled) {
+  transform: scale(0.92);
+}
+
+.qty-btn:focus-visible {
+  outline: 2px solid var(--accent-light);
+  outline-offset: 2px;
+}
+
+.qty-btn:disabled {
+  opacity: 0.28;
+  cursor: not-allowed;
+}
+
 .qty-count {
+  min-width: 38px;
+  text-align: center;
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 0.95rem;
 }
 
-/* Order Summary Sticky Box */
+
+/* ==========================================================================
+   DISCOUNT ROADMAP
+   ========================================================================== */
+
+.discount-roadmap {
+  max-width: 1320px;
+  margin: 0 auto 2.5rem;
+  padding: 1.4rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.discount-roadmap-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 1.2rem;
+}
+
+.roadmap-eyebrow,
+.summary-eyebrow,
+.next-discount-label {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.discount-roadmap-header h3 {
+  margin: 0.2rem 0 0;
+  font-size: 1.15rem;
+}
+
+.discount-progress-message {
+  max-width: 390px;
+  text-align: right;
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.discount-tier-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.7rem;
+}
+
+.discount-tier {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-height: 70px;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  opacity: 0.45;
+  filter: grayscale(0.35);
+  transition:
+    opacity 0.3s ease,
+    border-color 0.3s ease,
+    background 0.3s ease,
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.discount-tier.locked {
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.discount-tier.unlocked {
+  opacity: 1;
+  filter: none;
+  border-color: rgba(200, 16, 46, 0.65);
+  background: rgba(200, 16, 46, 0.07);
+  box-shadow: 0 0 22px rgba(200, 16, 46, 0.09);
+}
+
+.discount-tier.active {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+  box-shadow:
+    0 0 0 1px rgba(200, 16, 46, 0.18),
+    0 8px 25px rgba(200, 16, 46, 0.12);
+}
+
+.discount-tier.unlock-animation {
+  animation: discountUnlock 0.55s ease;
+}
+
+@keyframes discountUnlock {
+  0% {
+    transform: scale(0.96);
+    opacity: 0.45;
+  }
+
+  60% {
+    transform: scale(1.025);
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.discount-tier-icon {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--text-muted);
+}
+
+.discount-tier.unlocked .discount-tier-icon {
+  color: #ffffff;
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.discount-tier-info {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.discount-tier-info strong {
+  font-size: 0.78rem;
+}
+
+.discount-tier-info span {
+  color: var(--text-muted);
+  font-size: 0.63rem;
+  white-space: nowrap;
+}
+
+.discount-tier-status {
+  font-size: 0.52rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.discount-tier.unlocked .discount-tier-status {
+  color: var(--accent-light);
+}
+
+
+/* ==========================================================================
+   ORDER SUMMARY
+   ========================================================================== */
+
 .essential-order-summary {
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
   background: var(--bg-card);
   border: 1px solid var(--border-hover);
@@ -1405,25 +1679,182 @@ nav {
 .summary-category-line {
   font-size: 0.9rem;
   color: var(--text-secondary);
-  margin-bottom: 1rem;
+  margin-bottom: 1.3rem;
   padding-bottom: 0.8rem;
   border-bottom: 1px solid var(--border);
 }
 
+.summary-category-line strong {
+  color: var(--text-primary);
+}
+
+.summary-heading-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.summary-heading-row h3 {
+  margin: 0.25rem 0 0;
+  font-size: 1.1rem;
+}
+
+.summary-service-count {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+}
+
 .summary-items-box {
-  min-height: 50px;
+  min-height: 70px;
   margin-bottom: 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: 0.55rem;
 }
 
 .summary-item-row {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  font-size: 0.88rem;
+  gap: 1rem;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xs);
+  background: rgba(255, 255, 255, 0.015);
+  font-size: 0.84rem;
+}
+
+.item-name-qty {
   color: var(--text-primary);
 }
+
+.item-price-calc {
+  color: var(--accent-light);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.summary-empty-state {
+  min-height: 95px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.summary-empty-state p {
+  margin: 0.5rem 0 0.2rem;
+  font-size: 0.85rem;
+}
+
+.summary-empty-state small {
+  font-size: 0.7rem;
+}
+
+.empty-state-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  color: var(--text-muted);
+}
+
+
+/* --------------------------------------------------------------------------
+   Pricing
+   -------------------------------------------------------------------------- */
+
+.summary-pricing {
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--border);
+}
+
+.pricing-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.42rem 0;
+  color: var(--text-secondary);
+  font-size: 0.86rem;
+}
+
+.pricing-row strong {
+  color: var(--text-primary);
+}
+
+.discount-row strong {
+  color: var(--accent-light);
+}
+
+.savings-row {
+  color: #8fe0ad;
+}
+
+.savings-row strong {
+  color: #8fe0ad;
+}
+
+.digital-summary-row strong {
+  color: var(--accent-light);
+}
+
+
+/* --------------------------------------------------------------------------
+   Next Discount
+   -------------------------------------------------------------------------- */
+
+.summary-next-discount {
+  margin-top: 1rem;
+  padding: 0.9rem;
+  border: 1px solid rgba(200, 16, 46, 0.2);
+  border-radius: var(--radius-sm);
+  background: rgba(200, 16, 46, 0.035);
+}
+
+.next-discount-copy {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.next-discount-copy strong {
+  color: var(--text-primary);
+  font-size: 0.78rem;
+}
+
+.next-discount-progress {
+  width: 100%;
+  height: 4px;
+  margin-top: 0.65rem;
+  overflow: hidden;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.next-discount-progress span {
+  display: block;
+  height: 100%;
+  width: 0%;
+  border-radius: inherit;
+  background: var(--accent);
+  transition: width 0.4s ease;
+}
+
+
+/* --------------------------------------------------------------------------
+   Final Total
+   -------------------------------------------------------------------------- */
 
 .summary-content {
   display: flex;
@@ -1431,7 +1862,8 @@ nav {
   justify-content: space-between;
   gap: 2rem;
   flex-wrap: wrap;
-  padding-top: 1.2rem;
+  padding-top: 1.3rem;
+  margin-top: 1.2rem;
   border-top: 1px solid var(--border);
 }
 
@@ -1452,6 +1884,110 @@ nav {
   font-size: 2rem;
   font-weight: 800;
   color: var(--accent-light);
+}
+
+.btn-book:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 1100px) {
+
+  .discount-tier-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+}
+
+@media (max-width: 760px) {
+
+  .interactive-essential-section {
+    padding: 4rem 4vw;
+  }
+
+  .interactive-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem;
+  }
+
+  .service-price-card {
+    padding: 1.1rem;
+    min-height: 190px;
+  }
+
+  .service-price-card h3 {
+    font-size: 0.92rem;
+  }
+
+  .service-price {
+    font-size: 1.1rem;
+  }
+
+  .discount-roadmap-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .discount-progress-message {
+    max-width: none;
+    text-align: left;
+  }
+
+  .discount-tier-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .discount-tier {
+    min-height: 62px;
+  }
+
+  .essential-order-summary {
+    padding: 1.2rem;
+  }
+
+  .summary-content {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .btn-book {
+    width: 100%;
+    justify-content: center;
+  }
+
+}
+
+@media (max-width: 480px) {
+
+  .interactive-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .service-price-card {
+    min-height: 175px;
+  }
+
+  .summary-item-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .next-discount-copy {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .total-value {
+    font-size: 1.75rem;
+  }
+
 }
 
 /* --------------------------------------------------------------------------
